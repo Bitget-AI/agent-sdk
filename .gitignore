@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+.env
+.env.*
+*.tgz
+*.log
+npm-debug.log*
+.changeset/*.md
+!.changeset/README.md
+!.changeset/config.json

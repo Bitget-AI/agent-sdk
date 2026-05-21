@@ -1,0 +1,64 @@
+{
+  "name": "bitget-agent-sdk",
+  "version": "1.2.0",
+  "description": "Foundation SDK for the Bitget Agent Hub — 56+ Bitget API tools, types, and a built-in mock server for testing",
+  "type": "module",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./testing": {
+      "import": "./dist/testing/index.js",
+      "types": "./dist/testing/index.d.ts"
+    }
+  },
+  "bin": {
+    "bitget-mock-server": "dist/bin/mock-server.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm run typecheck && pnpm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "bitget",
+    "agent",
+    "sdk",
+    "trading",
+    "crypto",
+    "ai-agent",
+    "tools"
+  ],
+  "homepage": "https://github.com/bitget/agent-hub",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitget/agent-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bitget/agent-sdk/issues"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.2",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^2.0.0"
+  }
+}
