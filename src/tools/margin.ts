@@ -340,7 +340,7 @@ export function registerMarginTools(): ToolSpec[] {
           interest: "interest-history",
           liquidation: "liquidation-history",
         };
-        const suffix = recordTypeSuffixMap[recordType];
+        const suffix = recordTypeSuffixMap[recordType] ?? "borrow-history";
         const now = Date.now();
         const defaultStartTime = String(now - 30 * 24 * 60 * 60 * 1000);
         const response = await context.client.privateGet(

@@ -19,5 +19,5 @@
     "outDir": "dist"
   },
   "include": ["src/**/*.ts", "tsup.config.ts"],
-  "exclude": ["dist", "node_modules", "tests", "core-stub"]
+  "exclude": ["dist", "node_modules", "tests"]
 }
