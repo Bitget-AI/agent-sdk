@@ -4,7 +4,7 @@
 [![Types](https://img.shields.io/npm/types/bitget-agent-sdk.svg)](https://www.npmjs.com/package/bitget-agent-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-The **Foundation SDK** of the [Bitget Agent Hub](https://github.com/bitget/agent-installer) — Bitget's full REST API surface as 56+ AI-callable tools, with a typed TypeScript core and a built-in mock server for testing.
+The **Foundation SDK** of the [Bitget Agent Hub](https://github.com/bitget/agent-hub) — Bitget's full REST API surface as 56+ AI-callable tools, with a typed TypeScript core and a built-in mock server for testing.
 
 ```bash
 npm install bitget-agent-sdk
@@ -168,7 +168,7 @@ For surfacing errors to LLM tool-use frameworks, use `toToolErrorPayload(err)` t
 
 ## Documentation
 
-Full reference — modules, tool catalog, error codes, architecture — lives in the portal: [bitget/agent-installer](https://github.com/bitget/agent-installer).
+Full reference — modules, tool catalog, error codes, architecture — lives in the portal: [bitget/agent-hub](https://github.com/bitget/agent-hub).
 
 ## License
 
@@ -176,6 +176,6 @@ Full reference — modules, tool catalog, error codes, architecture — lives in
 
 ---
 
-Part of the **[Bitget Agent Hub](https://github.com/bitget/agent-installer)** — Trading Stack · Foundation.
+Part of the **[Bitget Agent Hub](https://github.com/bitget/agent-hub)** — Trading Stack · Foundation.
 
 Surfaces: [agent-cli](https://github.com/bitget/agent-cli) · [agent-mcp](https://github.com/bitget/agent-mcp) · [agent-skill](https://github.com/bitget/agent-skill)
