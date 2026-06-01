@@ -10,8 +10,8 @@ let client: BitgetRestClient;
 
 beforeAll(async () => {
   server = new MockServer();
-  const port = await server.start();
-  process.env["BITGET_API_BASE_URL"] = `http://localhost:${port}`;
+  await server.start();
+  process.env["BITGET_API_BASE_URL"] = server.baseUrl;
   config = loadConfig({ modules: "spot", readOnly: false });
   client = new BitgetRestClient(config);
   tools = buildTools(config);

@@ -3,12 +3,10 @@ import { MockServer } from "bitget-agent-sdk/testing";
 import { loadConfig, BitgetRestClient } from "bitget-agent-sdk";
 
 let server: MockServer;
-let serverUrl: string;
 
 beforeAll(async () => {
   server = new MockServer();
-  const port = await server.start();
-  serverUrl = `http://localhost:${port}`;
+  await server.start();
   process.env["BITGET_API_KEY"] = "test-key";
   process.env["BITGET_SECRET_KEY"] = "test-secret";
   process.env["BITGET_PASSPHRASE"] = "test-passphrase";
@@ -19,7 +17,7 @@ afterEach(() => vi.restoreAllMocks());
 
 describe("paper trading header", () => {
   test("does NOT send paptrading header when paperTrading=false", async () => {
-    process.env["BITGET_API_BASE_URL"] = serverUrl;
+    process.env["BITGET_API_BASE_URL"] = server.baseUrl;
     const config = loadConfig({ modules: "spot", readOnly: false, paperTrading: false });
     const client = new BitgetRestClient(config);
     const fetchSpy = vi.spyOn(globalThis, "fetch");
@@ -30,7 +28,7 @@ describe("paper trading header", () => {
   });
 
   test("sends paptrading: 1 header when paperTrading=true", async () => {
-    process.env["BITGET_API_BASE_URL"] = serverUrl;
+    process.env["BITGET_API_BASE_URL"] = server.baseUrl;
     const config = loadConfig({ modules: "spot", readOnly: false, paperTrading: true });
     const client = new BitgetRestClient(config);
     const fetchSpy = vi.spyOn(globalThis, "fetch");
