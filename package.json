@@ -61,7 +61,7 @@
     "typescript",
     "sdk"
   ],
-  "homepage": "https://github.com/bitget/agent-installer",
+  "homepage": "https://github.com/bitget/agent-hub",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bitget/agent-sdk.git"

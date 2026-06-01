@@ -10,8 +10,8 @@ let client: BitgetRestClient;
 
 beforeAll(async () => {
   server = new MockServer();
-  const port = await server.start();
-  process.env["BITGET_API_BASE_URL"] = `http://localhost:${port}`;
+  await server.start();
+  process.env["BITGET_API_BASE_URL"] = server.baseUrl;
   process.env["BITGET_API_KEY"] = "test-key";
   process.env["BITGET_SECRET_KEY"] = "test-secret";
   process.env["BITGET_PASSPHRASE"] = "test-passphrase";

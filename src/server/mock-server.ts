@@ -19,6 +19,14 @@ export class MockServer {
   private state: MockState;
   private router: Router;
   private server: Server | null = null;
+  private _baseUrl: string | null = null;
+
+  get baseUrl(): string {
+    if (!this._baseUrl) {
+      throw new Error("MockServer is not running. Call start() first.");
+    }
+    return this._baseUrl;
+  }
 
   constructor(initialState?: Partial<MockState>) {
     this.state = { ...createEmptyState(), ...initialState };
@@ -49,6 +57,7 @@ export class MockServer {
       this.server.on("error", reject);
       this.server.listen(port, "127.0.0.1", () => {
         const addr = this.server!.address() as AddressInfo;
+        this._baseUrl = `http://127.0.0.1:${addr.port}`;
         resolve(addr.port);
       });
     });
@@ -59,6 +68,7 @@ export class MockServer {
       if (!this.server) { resolve(); return; }
       const srv = this.server;
       this.server = null;
+      this._baseUrl = null;
       srv.close((err) => (err ? reject(err) : resolve()));
     });
   }
