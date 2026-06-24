@@ -1,42 +1,58 @@
-import { describe, test, expect, beforeAll, afterAll, afterEach, vi } from "vitest";
-import { MockServer } from "bitget-agent-sdk/testing";
-import { loadConfig, BitgetRestClient } from "bitget-agent-sdk";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { BitgetRestClient, loadConfig } from "@bitget-ai/bitget-agent-sdk";
 
-let server: MockServer;
-let serverUrl: string;
+function jsonResponse(body: unknown): Response {
+  return new Response(JSON.stringify(body), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+}
 
-beforeAll(async () => {
-  server = new MockServer();
-  const port = await server.start();
-  serverUrl = `http://localhost:${port}`;
-  process.env["BITGET_API_KEY"] = "test-key";
-  process.env["BITGET_SECRET_KEY"] = "test-secret";
-  process.env["BITGET_PASSPHRASE"] = "test-passphrase";
+afterEach(() => {
+  vi.restoreAllMocks();
+  delete process.env.BITGET_API_KEY;
+  delete process.env.BITGET_SECRET_KEY;
+  delete process.env.BITGET_PASSPHRASE;
 });
 
-afterAll(() => server.stop());
-afterEach(() => vi.restoreAllMocks());
+function captureHeaders() {
+  const calls: Headers[] = [];
+  vi.spyOn(globalThis, "fetch").mockImplementation(async (_url, init) => {
+    calls.push(new Headers(init?.headers));
+    return jsonResponse({ code: "00000", msg: "success", data: { ok: true } });
+  });
+  return calls;
+}
 
-describe("paper trading header", () => {
-  test("does NOT send paptrading header when paperTrading=false", async () => {
-    process.env["BITGET_API_BASE_URL"] = serverUrl;
-    const config = loadConfig({ modules: "spot", readOnly: false, paperTrading: false });
-    const client = new BitgetRestClient(config);
-    const fetchSpy = vi.spyOn(globalThis, "fetch");
-    await client.publicGet("/api/v2/spot/market/tickers");
-    const init = fetchSpy.mock.calls[0]?.[1];
-    const sentHeaders = new Headers(init?.headers as HeadersInit);
-    expect(sentHeaders.has("paptrading")).toBe(false);
+describe("paper trading + signing headers", () => {
+  it("adds the paptrading header when paperTrading is enabled", async () => {
+    process.env.BITGET_API_KEY = "key";
+    process.env.BITGET_SECRET_KEY = "secret";
+    process.env.BITGET_PASSPHRASE = "pass";
+    const calls = captureHeaders();
+    const client = new BitgetRestClient(loadConfig({ modules: "all", paperTrading: true }));
+    await client.callOperation("placeOrder", { symbol: "BTCUSDT", side: "buy" });
+    expect(calls[0]?.get("paptrading")).toBe("1");
+    expect(calls[0]?.get("ACCESS-KEY")).toBe("key");
+    expect(calls[0]?.get("ACCESS-SIGN")).toBeTruthy();
+    expect(calls[0]?.get("ACCESS-TIMESTAMP")).toBeTruthy();
   });
 
-  test("sends paptrading: 1 header when paperTrading=true", async () => {
-    process.env["BITGET_API_BASE_URL"] = serverUrl;
-    const config = loadConfig({ modules: "spot", readOnly: false, paperTrading: true });
-    const client = new BitgetRestClient(config);
-    const fetchSpy = vi.spyOn(globalThis, "fetch");
-    await client.publicGet("/api/v2/spot/market/tickers");
-    const init = fetchSpy.mock.calls[0]?.[1];
-    const sentHeaders = new Headers(init?.headers as HeadersInit);
-    expect(sentHeaders.get("paptrading")).toBe("1");
+  it("omits signing headers on public market endpoints", async () => {
+    const calls = captureHeaders();
+    const client = new BitgetRestClient(loadConfig({ modules: "all" }));
+    await client.callOperation("getTickers", { category: "SPOT" });
+    expect(calls[0]?.get("ACCESS-KEY")).toBeNull();
+    expect(calls[0]?.get("paptrading")).toBeNull();
+  });
+
+  it("never sends paptrading on public endpoints even when paperTrading is enabled", async () => {
+    // The Bitget demo env only hosts private endpoints; public market data
+    // (e.g. proof-of-reserves, index-components) returns 404 under paptrading:1.
+    const calls = captureHeaders();
+    const client = new BitgetRestClient(loadConfig({ modules: "all", paperTrading: true }));
+    await client.callOperation("getTickers", { category: "SPOT" });
+    expect(calls[0]?.get("paptrading")).toBeNull();
+    expect(calls[0]?.get("ACCESS-KEY")).toBeNull();
   });
 });

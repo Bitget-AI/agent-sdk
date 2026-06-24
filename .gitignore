@@ -1,15 +1,39 @@
+# Dependencies
 node_modules/
+
+# Build output
+lib/
 dist/
-.DS_Store
-.idea/
-.vscode/
-*.swp
-*.swo
-.env
-.env.*
-*.tgz
+spug-dist/
+coverage/
+
+# Logs
 *.log
 npm-debug.log*
-.changeset/*.md
-!.changeset/README.md
-!.changeset/config.json
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env / secrets — never commit credentials or KMS-decrypted tokens
+.env*
+!.env.example
+.npmrc
+
+# E2E generated artifacts
+e2e-reports/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.claude/
+
+# Misc
+.cache/
+.turbo/
+*.tsbuildinfo

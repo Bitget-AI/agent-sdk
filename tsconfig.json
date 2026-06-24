@@ -3,7 +3,7 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["node"],
     "strict": true,
     "noImplicitAny": true,
@@ -16,8 +16,8 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": false,
-    "outDir": "dist"
+    "outDir": "lib"
   },
   "include": ["src/**/*.ts", "tsup.config.ts"],
-  "exclude": ["dist", "node_modules", "tests"]
+  "exclude": ["lib", "node_modules", "tests"]
 }

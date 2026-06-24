@@ -1,47 +1,47 @@
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
+import { CATALOG } from "../generated/catalog.js";
 import { Router } from "./router.js";
-import { createEmptyState, type MockState, type SpotOrder, nextId } from "./state.js";
+import {
+  createEmptyState,
+  nextId,
+  type MockOrder,
+  type MockState,
+} from "./state.js";
 import { seedState } from "./fixtures.js";
-import { registerSpotMarketRoutes } from "./routes/spot-market.js";
-import { registerSpotTradeRoutes } from "./routes/spot-trade.js";
-import { registerFuturesMarketRoutes } from "./routes/futures-market.js";
-import { registerFuturesTradeRoutes } from "./routes/futures-trade.js";
-import { registerAccountRoutes } from "./routes/account.js";
-import { registerMarginRoutes } from "./routes/margin.js";
-import { registerCopyTradingRoutes } from "./routes/copy-trading.js";
-import { registerConvertRoutes } from "./routes/convert.js";
-import { registerEarnRoutes } from "./routes/earn.js";
-import { registerP2pRoutes } from "./routes/p2p.js";
-import { registerBrokerRoutes } from "./routes/broker.js";
+import { OVERRIDES, defaultHandler } from "./overrides.js";
 
+/**
+ * Catalog-driven in-memory Bitget mock. Every operation in the generated
+ * catalog is auto-registered, so the mock can never fall out of sync with the
+ * spec: regenerate the catalog and the mock instantly covers new endpoints.
+ * Curated operations get stateful behaviour via OVERRIDES; the rest return a
+ * generic success stub.
+ */
 export class MockServer {
   private state: MockState;
-  private router: Router;
+  private readonly router: Router;
   private server: Server | null = null;
+  private _baseUrl: string | null = null;
 
-  constructor(initialState?: Partial<MockState>) {
+  public get baseUrl(): string {
+    if (!this._baseUrl) {
+      throw new Error("MockServer is not running. Call start() first.");
+    }
+    return this._baseUrl;
+  }
+
+  public constructor(initialState?: Partial<MockState>) {
     this.state = { ...createEmptyState(), ...initialState };
     seedState(this.state);
     this.router = new Router();
-    this.registerAllRoutes();
+    const fallback = defaultHandler();
+    for (const op of CATALOG) {
+      this.router.register(op, OVERRIDES[op.operationId] ?? fallback);
+    }
   }
 
-  private registerAllRoutes(): void {
-    registerSpotMarketRoutes(this.router);
-    registerSpotTradeRoutes(this.router);
-    registerFuturesMarketRoutes(this.router);
-    registerFuturesTradeRoutes(this.router);
-    registerAccountRoutes(this.router);
-    registerMarginRoutes(this.router);
-    registerCopyTradingRoutes(this.router);
-    registerConvertRoutes(this.router);
-    registerEarnRoutes(this.router);
-    registerP2pRoutes(this.router);
-    registerBrokerRoutes(this.router);
-  }
-
-  start(port = 0): Promise<number> {
+  public start(port = 0): Promise<number> {
     return new Promise((resolve, reject) => {
       this.server = createServer((req, res) => {
         void this.router.handle(req, res, this.state);
@@ -49,51 +49,67 @@ export class MockServer {
       this.server.on("error", reject);
       this.server.listen(port, "127.0.0.1", () => {
         const addr = this.server!.address() as AddressInfo;
+        this._baseUrl = `http://127.0.0.1:${addr.port}`;
         resolve(addr.port);
       });
     });
   }
 
-  stop(): Promise<void> {
+  public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this.server) { resolve(); return; }
+      if (!this.server) {
+        resolve();
+        return;
+      }
       const srv = this.server;
       this.server = null;
+      this._baseUrl = null;
       srv.close((err) => (err ? reject(err) : resolve()));
     });
   }
 
-  reset(): void {
-    const empty = createEmptyState();
-    Object.assign(this.state, empty);
+  public reset(): void {
+    Object.assign(this.state, createEmptyState());
     seedState(this.state);
   }
 
-  getState(): MockState {
+  public getState(): MockState {
     return this.state;
   }
 
-  setState(patch: Partial<MockState>): void {
+  public setState(patch: Partial<MockState>): void {
     Object.assign(this.state, patch);
   }
 
-  seedOrder(order: Partial<SpotOrder>): string {
+  /** Force a Bitget error envelope for `METHOD /path`. */
+  public setErrorOverride(method: string, path: string, code: string, msg: string): void {
+    this.state.errorOverrides.set(`${method.toUpperCase()} ${path}`, { code, msg });
+  }
+
+  /** Override the `data` payload for a given operationId. */
+  public setResponseOverride(operationId: string, data: unknown): void {
+    this.state.responseOverrides.set(operationId, data);
+  }
+
+  /** Seed a live order directly into state. */
+  public seedOrder(order: Partial<MockOrder>): string {
     const orderId = order.orderId ?? nextId(this.state, "ORDER");
     const now = Date.now().toString();
-    const full: SpotOrder = {
+    const full: MockOrder = {
       orderId,
-      symbol: order.symbol ?? "BTCUSDT",
-      side: order.side ?? "buy",
-      orderType: order.orderType ?? "limit",
-      price: order.price ?? "50000",
-      size: order.size ?? "0.001",
-      status: order.status ?? "live",
-      fillSize: order.fillSize ?? "0",
+      symbol: "BTCUSDT",
+      category: "SPOT",
+      side: "buy",
+      orderType: "limit",
+      price: "50000",
+      size: "0.001",
+      status: "live",
+      filledSize: "0",
       cTime: now,
       uTime: now,
       ...order,
     };
-    this.state.spotOrders.set(orderId, full);
+    this.state.orders.set(orderId, full);
     return orderId;
   }
 }
