@@ -1,0 +1,4858 @@
+openapi: "3.0.3"
+info:
+  title: Bitget UTA API Collection
+  description: Auto-generated Postman collection from UTA API documentation with automatic signature generation
+  version: "3.0.0"
+servers:
+- url: "https://api.bitget.com"
+  description: "Bitget production API (Postman {{baseUrl}})"
+tags:
+- name: Account
+  description: Account endpoints
+- name: Trade
+  description: Trade endpoints
+- name: Market
+  description: Market endpoints
+- name: Strategy
+  description: Strategy endpoints
+- name: Broker
+  description: Broker endpoints
+- name: Crypto Loans
+  description: Crypto Loans endpoints
+- name: Inst Loan
+  description: Inst Loan endpoints
+- name: Tax
+  description: Tax endpoints
+security:
+- apiKeyAuth: []
+  apiSignAuth: []
+  apiTimestampAuth: []
+  apiPassphraseAuth: []
+paths:
+  /api/v3/account/deposit-address:
+    get:
+      tags:
+      - Account
+      summary: Get Deposit Address
+      operationId: getDepositAddress
+      description: Get deposit address
+      parameters:
+      - name: coin
+        in: query
+        description: "Coin name - The currency name can be obtained using the Get Currency Information API."
+        required: true
+        schema:
+          type: string
+      - name: chain
+        in: query
+        description: "Chain Name - The chain name can be obtained using the Get Currency Information API. - If not filled, the system will automatically match a chain to generate a deposit address"
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: "Deposit Quantity - Only applies to BTC Lightning Network - Limit range: 0.000001 - 0.01."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/deposit-records:
+    get:
+      tags:
+      - Account
+      summary: Get Deposit Records
+      operationId: getDepositRecords
+      description: Get deposit records
+      parameters:
+      - name: coin
+        in: query
+        description: "Coin name - If left blank, all currency deposit records will be retrieved."
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Query record start time<ul><li>Unix millisecond timestamp, e.g., 1690196141868</li></ul>"
+        required: true
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "Query record end time<ul><li>Unix millisecond timestamp, e.g., 1690196141868</li></ul>"
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Items per page The default value is 20, and the maximum value is 100."
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor ID - Used for pagination to reduce query response time - Do not send for the initial query. When querying the second page and subsequent data, use the smallest orderId returned from the previous query. The results will return data less than that value"
+        required: false
+        schema:
+          type: string
+      - name: orderId
+        in: query
+        description: "Order ID - Used for specifying order queries."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/sub-deposit-address:
+    get:
+      tags:
+      - Account
+      summary: Get Sub Deposit Address
+      operationId: getSubDepositAddress
+      description: Get sub deposit address
+      parameters:
+      - name: subUid
+        in: query
+        description: "Sub-account UID - The sub-account UID can be obtained via the Sub-account List API."
+        required: true
+        schema:
+          type: string
+      - name: coin
+        in: query
+        description: "Coin name - The currency name can be obtained using the Get Currency Information API."
+        required: true
+        schema:
+          type: string
+      - name: chain
+        in: query
+        description: "Chain Name - The chain name can be obtained using the Get Currency Information API."
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: "Deposit Quantity - Only applies to BTC Lightning Network - Limit range: 0.000001 - 0.01."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/sub-deposit-records:
+    get:
+      tags:
+      - Account
+      summary: Get Sub Deposit Records
+      operationId: getSubDepositRecords
+      description: Get sub-account deposit records
+      parameters:
+      - name: coin
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: subUid
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/sub-unified-assets:
+    get:
+      tags:
+      - Account
+      summary: Get SubAccount Unified Assets
+      operationId: getSubaccountUnifiedAssets
+      description: Get SubAccount Unified Assets
+      parameters:
+      - name: subUid
+        in: query
+        description: "Sub-account UID Leave blank to return all sub-account asset lists"
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor ID For pagination. Omit in first request. Pass previous cursor in subsequent requests."
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Sub-accounts per Page Default value is 10, maximum is 50."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/user/create-sub-api:
+    post:
+      tags:
+      - Account
+      summary: Create Sub-account API Key
+      operationId: createSubAccountApiKey
+      description: |-
+        - This API is used to create an API Key for a sub-account under a unified account. It is applicable when the main
+        account is in a mix or unified account mode. If the current main account is in the classic account mode, this API
+        cannot be called.
+        - Currently, only the creation of virtual sub-accounts is supported.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateSubAccountApiKeyRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/user/delete-sub-api:
+    post:
+      tags:
+      - Account
+      summary: Delete Sub-account API Key
+      operationId: deleteSubAccountApiKey
+      description: |-
+        This API is used for the main account to delete a sub-account's API Key. It is not applicable for the main account or
+        sub-account to delete their own API Key.
+        Please note that once the deletion is completed, the sub-account API Key will be immediately invalid. Before performing
+        the deletion, ensure that this operation will not cause any loss.
+        This API only supports deleting API Keys of sub-accounts under a unified account, and does not support deleting API Keys
+        of sub-accounts under a classic account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeleteSubAccountApiKeyRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/user/sub-api-list:
+    get:
+      tags:
+      - Account
+      summary: Get Sub-account API Keys
+      operationId: getSubAccountApiKeys
+      description: Supports querying the full API Key list under a single sub-account.
+      parameters:
+      - name: subUid
+        in: query
+        description: "Sub-account UID"
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Items per page The default value is 100, and the maximum value is 100."
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor ID Used for pagination. Do not pass it for the first query. For subsequent queries (second page and beyond), use the cursor returned from the previous query."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/user/update-sub-api:
+    post:
+      tags:
+      - Account
+      summary: Modify Sub-account API Key
+      operationId: modifySubAccountApiKey
+      description: This API is used to modify the unified account sub-account API Key permissions and withdrawal whitelist IP addresses. It only supports modifying the API Key of a unified account sub-account and does not support creating an API Key for a classic account sub-account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ModifySubAccountApiKeyRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/user/create-sub:
+    post:
+      tags:
+      - Account
+      summary: Create Sub-account
+      operationId: createSubAccount
+      description: "- This API is used for the main account to create a sub-account. It only supports creating unified account virtual sub-accounts and does not support creating regular sub-accounts."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateSubAccountRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/user/sub-account/agent-create:
+    post:
+      tags:
+      - Account
+      summary: Create Agent Sub-account
+      operationId: createAgentSubAccount
+      description: |-
+        - This API is used for the parent account to create an Agent sub-account (broker/agent business). It only supports creating unified-account virtual sub-accounts and can only be called by the parent account.
+        - Rate limit: 1 request/second/UID.
+        - Permission required: unified-account read-write.
+        - `username`: required, lowercase letters only, max 20 characters.
+        - `passphrase`: required, 8-32 characters, letters and digits.
+        - `note`: optional remark.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateAgentSubAccountRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/user/freeze-sub:
+    post:
+      tags:
+      - Account
+      summary: Freeze/Unfreeze Sub-account
+      operationId: freezeUnfreezeSubAccount
+      description: Freeze/Unfreeze Sub-account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/FreezeUnfreezeSubAccountRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/user/sub-list:
+    get:
+      tags:
+      - Account
+      summary: Get Sub-account List
+      operationId: getSubAccountList
+      description: Query Sub-account List
+      parameters:
+      - name: limit
+        in: query
+        description: "Items per page The default value is 100, and the maximum value is 100."
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor ID Used for pagination. Do not pass it for the first query. For subsequent queries (second page and beyond), use the cursor returned from the previous query."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/transferable-coins:
+    get:
+      tags:
+      - Account
+      summary: Get Transferable Coins
+      operationId: getTransferableCoins
+      description: "Query transferable coins **between Classic and UTA accounts**. <br/>_Classic accounts include Spot, Isolated Margin, Cross Margin, USDT Futures, USDC Futures, Coin-M Futures, and P2P accounts_"
+      parameters:
+      - name: fromType
+        in: query
+        description: "From (source) account type spot Spot account/Funding account p2p P2P account/OTC account coin_futures Coin-M futures account usdt_futures USDT futures account usdc_futures USDC futures account crossed_margin Cross margin account isolated_margin Isolated margin account uta Unified trading account"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "spot"
+          - "p2p"
+          - "coin_futures"
+          - "usdt_futures"
+          - "usdc_futures"
+          - "crossed_margin"
+          - "isolated_margin"
+          - "uta"
+      - name: toType
+        in: query
+        description: "To (target) account type spot Spot account/Funding account p2p P2P account/OTC account coin_futures Coin-M futures account usdt_futures USDT futures account usdc_futures USDC futures account crossed_margin Cross margin account isolated_margin Isolated margin account uta Unified trading account"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "spot"
+          - "p2p"
+          - "coin_futures"
+          - "usdt_futures"
+          - "usdc_futures"
+          - "crossed_margin"
+          - "isolated_margin"
+          - "uta"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/sub-master-transfer:
+    post:
+      tags:
+      - Account
+      summary: Sub-Main Account Transfer
+      operationId: subMainAccountTransfer
+      description: "Sub-account initiates transfer to master account，and the caller must be the sub-account account API Key."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SubMainAccountTransferRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/sub-transfer-record:
+    get:
+      tags:
+      - Account
+      summary: Get the transfer records of Main-Sub account
+      operationId: getTheTransferRecordsOfMainSubAccount
+      description: This API supports retrieving transfer records between main and sub accounts.
+      parameters:
+      - name: subUid
+        in: query
+        description: "Sub-account UID. If not provided, transfer records of the main account will be retrieved."
+        required: false
+        schema:
+          type: string
+      - name: role
+        in: query
+        description: "Transfer-out account type initiator Initiator of the transfer receiver Recipient of the transfer Default: initiator"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "initiator"
+          - "receiver"
+      - name: coin
+        in: query
+        description: "Coin name"
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Start time for querying transfer records<ul><li>Unix millisecond timestamp, e.g., 1690196141868</li><li>The time interval between startTime and endTime should not exceed 90 days.</li></ul>"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End time for querying transfer records<ul><li>Unix millisecond timestamp, e.g., 1690196141868</li><li>The time interval between startTime and endTime should not exceed 90 days.</li></ul>"
+        required: false
+        schema:
+          type: string
+      - name: clientOid
+        in: query
+        description: "clientOid,Cannot exceed 64 characters."
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Items per page The default value is 100, and the maximum value is 100."
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor ID Used for pagination. Do not pass it for the first query. For subsequent queries (second page and beyond), use the cursor returned from the previous query."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/sub-transfer:
+    post:
+      tags:
+      - Account
+      summary: Main-Sub Account Transfer
+      operationId: mainSubAccountTransfer
+      description: |-
+        Sub-account to Main Account Asset Transfer. The transfer types supported by this API include:
+        <ul>
+        <li>Main account to sub-account (only the main account API Key has permission)</li>
+        <li>Sub-account to main account (only the main account API Key has permission)</li>
+        <li>Sub-account to sub-account (only the main account API Key has permission, and the sending and receiving sub-accounts must belong to the same main account)</li>
+        <li>Sub-account internal transfer (only the main account API Key has permission, and the sending and receiving sub-accounts must be the same sub-account)</li>
+        </ul>
+        The UID of the transferring and receiving accounts in the request parameters must be in a main-sub or sibling
+        relationship, and the caller must be the main account API Key.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/MainSubAccountTransferRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/transfer:
+    post:
+      tags:
+      - Account
+      summary: Transfer
+      operationId: transfer
+      description: Support for fund transfers in and out between unified accounts and classic accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TransferRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/withdrawal-records:
+    get:
+      tags:
+      - Account
+      summary: Get Withdrawal Records
+      operationId: getWithdrawalRecords
+      description: Get withdrawal records.
+      parameters:
+      - name: coin
+        in: query
+        description: "Coin name - If not filled in, all coin deposit records will be retrieved."
+        required: false
+        schema:
+          type: string
+      - name: orderId
+        in: query
+        description: "order ID - Either clientOid or orderId must be provided. If both are present or do not match, orderId will take priority"
+        required: false
+        schema:
+          type: string
+      - name: clientOid
+        in: query
+        description: "Client Order ID - Either clientOid or orderId must be provided. If both are present or do not match, orderId will take priority"
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Query record start time<ul><li>Unix millisecond timestamp, e.g., 1690196141868</li></ul>"
+        required: true
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "Query record end time<ul><li>Unix millisecond timestamp, e.g., 1690196141868</li></ul>"
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Items per page The default value is 20, and the maximum value is 100."
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor ID - Used for pagination to reduce query response time - Do not send for the initial query. When querying the second page and subsequent data, use the smallest orderId returned from the previous query. The results will return data less than that value"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/withdrawal:
+    post:
+      tags:
+      - Account
+      summary: Withdrawal
+      operationId: withdrawal
+      description: Includes on-chain withdrawals and internal transfers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/WithdrawalRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/adjust-account-mode:
+    post:
+      tags:
+      - Account
+      summary: Adjust Account Mode
+      operationId: adjustAccountMode
+      description: |-
+        This endpoint supports the following account-mode switching scenarios. It supports switching between Basic Mode and
+        Advanced Mode under the Unified Account:
+        1. The master account switches its own mode
+        2. A sub-account switches its own mode
+        3. The master account switches the mode for its sub-account(s)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/AdjustAccountModeRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/set-leverage:
+    post:
+      tags:
+      - Account
+      summary: Set Leverage
+      operationId: setLeverage
+      description: |-
+        This endpoint allows you to set leverage.
+        - Isolated margin leverage adjustment is not currently supported via the API and is expected to go live in Q1 2026.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SetLeverageRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/set-hold-mode:
+    post:
+      tags:
+      - Account
+      summary: Set Holding Mode
+      operationId: setHoldingMode
+      description: This endpoint allows you to set the position holding mode between one-way and hedge mode.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SetHoldingModeRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/deposit-account:
+    post:
+      tags:
+      - Account
+      summary: Set Up Deposit Account
+      operationId: setUpDepositAccount
+      description: |-
+        This configuration item remains valid for a long time. That is, once a user sets a default recharge account for a
+        certain symbol, it will be retained permanently, and there is no need to reconfigure it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SetUpDepositAccountRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/fee-rate:
+    get:
+      tags:
+      - Account
+      summary: Get Account Fee Rate
+      operationId: getAccountFeeRate
+      description: Get Account Fee Rate
+      parameters:
+      - name: symbol
+        in: query
+        description: "Symbol e.g.,BTCUSDT"
+        required: true
+        schema:
+          type: string
+      - name: category
+        in: query
+        description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/funding-assets:
+    get:
+      tags:
+      - Account
+      summary: Get Account Funding Assets
+      operationId: getAccountFundingAssets
+      description: Obtain fund account information and only return the coins with assets.
+      parameters:
+      - name: coin
+        in: query
+        description: "Coin name"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/settings:
+    get:
+      tags:
+      - Account
+      summary: Get Account Info
+      operationId: getAccountInfo
+      description: |-
+        - Query account information, including the holding mode, margin mode, leverage multiple, and more.
+        - Isolated margin mode is not currently available via the API, and is expected to go live in Q1 2026.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/assets:
+    get:
+      tags:
+      - Account
+      summary: Get Account Assets
+      operationId: getAccountAssets
+      description: "Query account information and assets, with only non-zero balances being returned."
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/convert-records:
+    get:
+      tags:
+      - Account
+      summary: Get Convert Records
+      operationId: getConvertRecords
+      description: Query convert records within the last 90 days.
+      parameters:
+      - name: fromCoin
+        in: query
+        description: "From coin (source coin) It refers to the coin being converted"
+        required: true
+        schema:
+          type: string
+      - name: toCoin
+        in: query
+        description: "To coin (target coin) It refers to the coin being converted into (received)"
+        required: true
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix timestamp in milliseconds e.g.,1597026383085 The access window is 90 days"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix timestamp in milliseconds e.g.,1597026383185 The time range between startTime and endTime must not exceed 30 days"
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default:100. Maximum:100"
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor Pagination is implemented by omitting the cursor in the first query and applying the cursor from the previous query for subsequent pages"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/deduct-info:
+    get:
+      tags:
+      - Account
+      summary: Get Deduct Info
+      operationId: getDeductInfo
+      description: Get BGB deduction status.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/financial-records:
+    get:
+      tags:
+      - Account
+      summary: Get Financial Records
+      operationId: getFinancialRecords
+      description: Query financial records within the last 90 days.
+      parameters:
+      - name: category
+        in: query
+        description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures OTHER Other"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          - "OTHER"
+      - name: coin
+        in: query
+        description: "Coin name e.g.,BTC"
+        required: false
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: "Type TRANSFER_IN/TRANSFER_OUT...... All enumeration values can be viewed under the Enumeration category."
+        required: false
+        schema:
+          type: string
+          enum:
+          - "TRANSFER_IN"
+          - "TRANSFER_OUT"
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix timestamp in milliseconds e.g.,1597026383085 The access window is 90 days"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix timestamp in milliseconds e.g.,1597026383185 The time range between startTime and endTime must not exceed 30 days"
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default:100. Maximum:100"
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor Pagination is implemented by omitting the cursor in the first query and applying the cursor from the previous query for subsequent pages"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/max-transferable:
+    get:
+      tags:
+      - Account
+      summary: Get Max Transferable
+      operationId: getMaxTransferable
+      description: Get the maximum transferable amount for the unified account.
+      parameters:
+      - name: coin
+        in: query
+        description: "Coin name"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/open-interest-limit:
+    get:
+      tags:
+      - Account
+      summary: Get OI Limit
+      operationId: getOiLimit
+      description: get open interest limit.
+      parameters:
+      - name: symbol
+        in: query
+        description: "Symbol e.g.,BTCUSDT"
+        required: true
+        schema:
+          type: string
+      - name: category
+        in: query
+        description: "Product type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/payment-coins:
+    get:
+      tags:
+      - Account
+      summary: Get Payment Coins
+      operationId: getPaymentCoins
+      description: Query payment coins.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/repayable-coins:
+    get:
+      tags:
+      - Account
+      summary: Get Repayable Coins
+      operationId: getRepayableCoins
+      description: Query repayable coins.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/switch-status:
+    get:
+      tags:
+      - Account
+      summary: Get Switch Status
+      operationId: getSwitchStatus
+      description: Only supports parent accounts.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/repay:
+    post:
+      tags:
+      - Account
+      summary: Repay
+      operationId: repay
+      description: This endpoint enables manual repayment in the Unified Trading Account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RepayRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/switch:
+    post:
+      tags:
+      - Account
+      summary: Switch Account
+      operationId: switchAccount
+      description: |-
+        1. Only supports parent accounts.<br/>
+        2. This endpoint is only used for switching to classic account mode.
+        3. Please note that since the account switching process takes approximately 1 minute, the successful response you receive only indicates that the request has been received, and does not mean that the account has been successfully switched to the classic account.
+        4. Please use the query switching status interface to confirm whether the account switching is successful.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/switch-deduct:
+    post:
+      tags:
+      - Account
+      summary: Switch Deduct
+      operationId: switchDeduct
+      description: Set BGB deduction.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SwitchDeductRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/batch-modify-order:
+    post:
+      tags:
+      - Trade
+      summary: Batch Modify Orders
+      operationId: batchModifyOrders
+      description: |-
+        - Supports batch order modification via API, allowing simultaneous submission of multiple orders across different
+        trading pairs (limited to orders within the same business line).
+        - Each request supports modification of up to 20 orders.
+        - Supports continuous order modification, meaning additional modification requests can be submitted before the previous
+        modification request is completed. A maximum of 5 consecutive modification requests for in-progress orders can be
+        submitted, and the matching engine will process the modification requests in sequence.
+        - Within the same batch of modification requests, each order can only appear once.
+        - Only fully unfilled orders can have their price and quantity modified.
+        - Partially filled orders can have their price and quantity modified (the modified quantity cannot be less than the
+        already filled quantity).
+        - Modification of reduce-only orders is not supported.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/BatchModifyOrdersRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/cancel-symbol-order:
+    post:
+      tags:
+      - Trade
+      summary: Cancel All Orders
+      operationId: cancelAllOrders
+      description: Cancel unfilled or partially filled orders by symbol or category.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CancelAllOrdersRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/cancel-batch:
+    post:
+      tags:
+      - Trade
+      summary: Batch Cancel
+      operationId: batchCancel
+      description: |-
+        - This endpoint allows you to cancel a multiple unfilled or partially filled order across spot, margin, and futures
+        markets.
+        - When making a batch order cancellation, ensure that each request uses either orderId or clientOid for identification — never both. If both orderId and clientOid are provided in a single request, the clientOid will be ignored.
+        - Batch order cancellation allows partial success.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/BatchCancelRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/cancel-order:
+    post:
+      tags:
+      - Trade
+      summary: Cancel Order
+      operationId: cancelOrder
+      description: "This endpoint allows you to cancel a single unfilled or partially filled order across spot, margin, and futures markets."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CancelOrderRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/close-positions:
+    post:
+      tags:
+      - Trade
+      summary: Close All Positions
+      operationId: closeAllPositions
+      description: "Close positions by position side or category. All positions will be closed at market price, subject to slippage."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CloseAllPositionsRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/countdown-cancel-all:
+    post:
+      tags:
+      - Trade
+      summary: CountDown Cancel All
+      operationId: countdownCancelAll
+      description: |-
+        In practical use, clients need to periodically send heartbeat requests to prevent uncontrolled open orders due to
+        abnormal disconnections or system crashes.<br/>
+        For example, if your expected heartbeat interval is 10 seconds, meaning if no heartbeat request is sent for over 10
+        seconds, all orders must be canceled:<br/>
+        - Under normal circumstances, you can call this interface every 3-5 seconds, set the countdown to 10, and repeatedly
+        call it to reset the countdown.<br/>
+        - Under abnormal circumstances, if no heartbeat request is sent for over 10 seconds, all orders under the account will
+        be automatically canceled; after automatic cancellation, the Deadman Switch mechanism will automatically close.<br/>
+        - To manually close the Deadman Switch mechanism, simply set the countdown to 0.<br/>
+        P.S. This interface only supports canceling orders under UTA accounts, not classic accounts.<br/>
+        Please contact your dedicated Business Development representative to apply for access to this interface.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CountdownCancelAllRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/account/max-open-available:
+    post:
+      tags:
+      - Trade
+      summary: Get Max Open Available
+      operationId: getMaxOpenAvailable
+      description: Get max open available
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/GetMaxOpenAvailableRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/order-info:
+    get:
+      tags:
+      - Trade
+      summary: Get Order Details
+      operationId: getOrderDetails
+      description: Query order details using either orderId or clientOid.
+      parameters:
+      - name: orderId
+        in: query
+        description: "Order ID Either clientOid or orderId must be provided. If both are present or do not match, orderId will take priority"
+        required: false
+        schema:
+          type: string
+      - name: clientOid
+        in: query
+        description: "Client order ID Either clientOid or orderId must be provided. If both are present or do not match, orderId will take priority"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/fills:
+    get:
+      tags:
+      - Trade
+      summary: Get Fill History
+      operationId: getFillHistory
+      description: |-
+        Query historical fills within the last 90 days.
+        - **Query Range Constraint**<br/> Each individual query can only cover a maximum of 30 days within the 90-day window.
+      parameters:
+      - name: category
+        in: query
+        description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: orderId
+        in: query
+        description: "Order ID"
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix timestamp in milliseconds e.g.,1597026383085 The access window is 90 days."
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix timestamp in milliseconds e.g.,1597026383185 The time range between startTime and endTime must not exceed 30 days."
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default:100. Maximum:100"
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor Pagination is implemented by omitting the cursor in the first query and applying the cursor from the previous query for subsequent pages"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/history-orders:
+    get:
+      tags:
+      - Trade
+      summary: Get Order History
+      operationId: getOrderHistory
+      description: |-
+        Query historical orders within the last 90 days.
+        - **Query Range Constraint**<br/> Each individual query can only cover a maximum of 30 days within the 90-day window.
+      parameters:
+      - name: category
+        in: query
+        description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT |"
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix timestamp in milliseconds e.g.,1597026383085 The access window is 90 days"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix timestamp in milliseconds e.g.,1597026383185 The time range between startTime and endTime must not exceed 30 days"
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default:100. Maximum:100"
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor Pagination is implemented by omitting the cursor in the first query and applying the cursor from the previous query for subsequent pages"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/unfilled-orders:
+    get:
+      tags:
+      - Trade
+      summary: Get Open Orders
+      operationId: getOpenOrders
+      description: |-
+        Query unfilled or partially filled orders. To query closed orders, please use the order history endpoint.
+        - **Order Limit**
+        - **Futures**: 400 orders across all USDT, Coin-M, and USDC futures trading pairs.
+        - **Spot**: 400 orders across all spot and margin trading pairs.
+      parameters:
+      - name: category
+        in: query
+        description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT |"
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix timestamp in milliseconds e.g.,1597026383085"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix timestamp in milliseconds e.g.,1597026383085"
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default:100. Maximum:100"
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor Pagination is implemented by omitting the cursor in the first query and applying the cursor from the previous query for subsequent pages"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/position/adlRank:
+    get:
+      tags:
+      - Trade
+      summary: Get Position ADL Rank
+      operationId: getPositionAdlRank
+      description: Get Position ADL Rank
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/position/history-position:
+    get:
+      tags:
+      - Trade
+      summary: Get Positions History
+      operationId: getPositionsHistory
+      description: Query historical positions within the last 90 days.
+      parameters:
+      - name: category
+        in: query
+        description: "Product type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix timestamp in milliseconds e.g.,1597026383085 The access window is 90 days"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix timestamp in milliseconds e.g.,1597026383185 The time range between startTime and endTime must not exceed 30 days"
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default:100. Maximum:100"
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor Pagination is implemented by omitting the cursor in the first query and applying the cursor from the previous query for subsequent pages"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/position/current-position:
+    get:
+      tags:
+      - Trade
+      summary: Get Position Info
+      operationId: getPositionInfo
+      description: "Query real-time position data by symbol, side, or category."
+      parameters:
+      - name: category
+        in: query
+        description: "Product type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.BTCUSDT If no symbol is provided, all positions in the corresponding category will be returned."
+        required: false
+        schema:
+          type: string
+      - name: posSide
+        in: query
+        description: "Position side long/short If this field is provided, only the position in the corresponding side will be returned."
+        required: false
+        schema:
+          type: string
+          enum:
+          - "long"
+          - "short"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/modify-order:
+    post:
+      tags:
+      - Trade
+      summary: Modify Order
+      operationId: modifyOrder
+      description: |-
+        Support modifying orders using either the order ID (orderId) or a custom order ID (clientOid).
+        - Only orders that have not been fully filled can be modified. If an order has been completely filled, it cannot be
+        modified through this interface.
+        - After submitting a modification request and before receiving the result, repeated modification requests cannot be
+        submitted.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/BatchModifyOrdersRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/place-batch:
+    post:
+      tags:
+      - Trade
+      summary: Batch Order
+      operationId: batchOrder
+      description: |-
+        This endpoint allows the order placement across spot, margin, or futures markets with customizable parameters, including
+        price, quantity, and order type, etc.
+        - **Upcoming Features** (currently not supported)
+        - Isolated spot margin will be available soon.
+        - Copy trading order placement will be available soon.
+        - Take profit and stop loss will be available soon.
+        - **Futures** <br/>
+        For one-way mode, reduce-only orders are allowed to place. If a reduce only order already exists and the order
+        quantity equals the position size, or if a new reduce only order exceeds the remaining position size, the previous
+        reduction order will be automatically canceled and replaced. In this case, the returned orderId will be null. <br/>*
+        *It is recommended to always provide a `clientOid`.（currently,`reduce-only` orders are not supported）**
+        - **Margin** <br/>Margin orders will automatically trigger fund borrowing.
+        - **Order Check**
+        - **Futures**:`price` must meet the price multiplier and be a multiple of `priceMultiplier`, and conform to the
+        `pricePrecision` decimal places. `qty` must be greater than or equal to `minOrderAmount` and be a multiple of
+        `sizeMultiplier`.
+        - **Spot**:`price` must meet the decimal place requirement. `qty` must be greater than or equal to `minOrderAmount`.
+        - **Open Position Logic**
+        - **Hedge-mode**<br/>
+        Open long: `side=buy` & `posSide=long`<br/>
+        Open Short:  `side=sell` & `posSide=short`<br/>
+        Close long: `side=sell` & `posSide=long`<br/>
+        Close short: `side=buy` & `posSide=short`<br/>
+        - **One-way-mode**<br/>
+        Open long: `side=buy`<br/>
+        Open short: `side=sell`<br/>
+        Close long: `side=sell` & `reduceOnly=yes`<br/>
+        Close short: `side=buy` & `reduceOnly=yes`<br/>
+        - **Order Limit**
+        - **Futures**: 400 orders across all USDT, Coin-M, and USDC futures trading pairs.
+        - **Spot**: 400 orders across all spot and margin trading pairs.
+        - **ClientOid Constraints**<br/>
+        Please ensure your clientOid matches the regular expression `^[\.A-Z\:/a-z0-9_-]{1,32}$`, consisting of 1 to 32
+        characters, including periods (.), uppercase letters, colons (:), lowercase letters, numbers, underscores (_), and
+        hyphens (-).
+        - **Request Monitor**<br/>
+        The API requests will be monitored. If the total number of orders for a single account (including master and
+        sub-accounts) exceeds a set daily limit (UTC 00:00 - UTC 24:00), the platform reserves the right to issue reminders,
+        warnings, and enforce necessary restrictions. By using the API, clients acknowledge and agree to comply with these
+        terms.
+        - **API Broker rebate identifier**:<br/>
+        The following code block needs to be added to the HTTP Header of the request.
+        > "X-CHANNEL-API-CODE":"your-channel-api-code"
+        - **Error Sample**<br/>
+        > { "code":"40762", "msg":"The order size is greater than the max open size", "requestTime":1627293504612 }<br/>
+        >
+        This error code may occur in the following scenarios.
+        - Insufficient account balance.<br/>
+        - The position tier for this symbol has reached its limit. For details on specific tiers, please
+        refer <a href='https://www.bitget.com/futures/introduction/position-tier?code=BTCUSDT_UMCBL?business=USDT_MIX_CONTRACT_BL' rel='nofollow'>
+        here</a> .<br/>
+        Note: If the following errors occur when placing an order, please use `clientOid` to query the order details to confirm
+        the final result of the operation.
+        > { "code": "40010", "msg": "Request timed out", "requestTime": 1666268894074, "data": null }<br/>
+        > { "code": "40725", "msg": "service return an error", "requestTime": 1666268894071, "data": null }<br/>
+        > { "code": "45001", "msg": "Unknown error", "requestTime": 1666268894071, "data": null }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/BatchOrderRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/place-order:
+    post:
+      tags:
+      - Trade
+      summary: Place Order
+      operationId: placeOrder
+      description: |-
+        This endpoint allows the order placement across spot, margin, or futures markets with customizable parameters, including price, quantity, and order type, etc.
+        - **Upcoming Features** (currently not supported)
+        - Isolated spot margin will be available soon.
+        - Copy trading order placement will be available soon.
+        - **Futures** <br/>
+        For one-way mode, reduce-only orders are allowed to place. If a reduce only order already exists and the order quantity equals the position size, or if a new reduce only order exceeds the remaining position size, the previous reduction order will be automatically canceled and replaced. In this case, the returned orderId will be null. <br/>**It is recommended to always provide a `clientOid`.**
+        - **Margin** <br/>Margin orders will automatically trigger fund borrowing.
+        - **Order Check**
+        - **Futures**:`price` must meet the price multiplier and be a multiple of `priceMultiplier`, and conform to the `pricePrecision` decimal places. `qty` must be greater than or equal to `minOrderAmount` and be a multiple of `sizeMultiplier`.
+        - **Spot**:`price` must meet the decimal place requirement. `qty` must be greater than or equal to `minOrderAmount`.
+        - **Open Position Logic**
+        - **Hedge-mode**<br/>
+        Open long: `side=buy` & `posSide=long`<br/>
+        Open Short:  `side=sell` & `posSide=short`<br/>
+        Close long: `side=sell` & `posSide=long`<br/>
+        Close short: `side=buy` & `posSide=short`<br/>
+        - **One-way-mode**<br/>
+        Open long: `side=buy`<br/>
+        Open short: `side=sell`<br/>
+        Close long: `side=sell` & `reduceOnly=yes`<br/>
+        Close short: `side=buy` & `reduceOnly=yes`<br/>
+        - **Order Limit**
+        - **Futures**: 400 orders across all USDT, Coin-M, and USDC futures trading pairs.
+        - **Spot**: 400 orders across all spot and margin trading pairs.
+        - **ClientOid Constraints**<br/>
+        Please ensure your clientOid matches the regular expression `^[\.A-Z\:/a-z0-9_-]{1,32}$`, consisting of 1 to 32 characters, including periods (.), uppercase letters, colons (:), lowercase letters, numbers, underscores (_), and hyphens (-).
+        - **Request Monitor**<br/>
+        The API requests will be monitored. If the total number of orders for a single account (including master and sub-accounts) exceeds a set daily limit (UTC 00:00 - UTC 24:00), the platform reserves the right to issue reminders, warnings, and enforce necessary restrictions. By using the API, clients acknowledge and agree to comply with these terms.
+        - **API Broker rebate identifier**:<br/>
+        The following code block needs to be added to the HTTP Header of the request.
+        > "X-CHANNEL-API-CODE":"your-channel-api-code"
+        - **Error Sample**<br/>
+        > { "code":"40762", "msg":"The order size is greater than the max open size", "requestTime":1627293504612 }<br/>
+        >
+        This error code may occur in the following scenarios.
+        - Insufficient account balance.<br/>
+        - The position tier for this symbol has reached its limit. For details on specific tiers, please refer <a href='https://www.bitget.com/futures/introduction/position-tier?code=BTCUSDT_UMCBL?business=USDT_MIX_CONTRACT_BL' rel='nofollow'>here</a> .<br/>
+        - **COIN-M Futures Symbol Format Description:**<br/>
+        - **<u>The symbol format for the new COIN-M business line is "XXXUSD_CM". For example, the BTCUSD trading pair in COIN-M futures is formatted as BTCUSD_CM.</u>**
+        - The new COIN-M business line does not support modifying orders, ADL, strategy orders, or preset take-profit/stop-loss orders.
+        Note: If the following errors occur when placing an order, please use `clientOid` to query the order details to confirm the final result of the operation.
+        > { "code": "40010", "msg": "Request timed out", "requestTime": 1666268894074, "data": null }<br/>
+        > { "code": "40725", "msg": "service return an error", "requestTime": 1666268894071, "data": null }<br/>
+        > { "code": "45001", "msg": "Unknown error", "requestTime": 1666268894071, "data": null }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PlaceOrderRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/fills:
+    get:
+      tags:
+      - Market
+      summary: Get Recent Public Fills
+      operationId: getRecentPublicFills
+      description: Query recent public fill data on Bitget.
+      parameters:
+      - name: category
+        in: query
+        description: "Product Type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default: 100. Maximum: 100"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/candles:
+    get:
+      tags:
+      - Market
+      summary: Get Kline/Candlestick
+      operationId: getKlineCandlestick
+      description: "Query kline/candlestick data. This endpoint allows retrieving up to 1,000 candlesticks."
+      parameters:
+      - name: category
+        in: query
+        description: "Product Type SPOT Spot trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: true
+        schema:
+          type: string
+      - name: interval
+        in: query
+        description: "Granularity 1m,3m,5m,15m,30m,1H,4H,6H,12H,1D"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "1m"
+          - "3m"
+          - "5m"
+          - "15m"
+          - "30m"
+          - "1H"
+          - "4H"
+          - "6H"
+          - "12H"
+          - "1D"
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix millisecond timestamp, e.g.,1672410780000"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix millisecond timestamp, e.g.,1672410781000"
+        required: false
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: "Candlestick type market, mark, index, premium. Default: market"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "market"
+          - "mark"
+          - "index"
+          - "premium"
+      - name: limit
+        in: query
+        description: "Limit per page Default:1000. Maximum: 100"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/oi-limit:
+    get:
+      tags:
+      - Market
+      summary: Get Open Interest Limit
+      operationId: getOpenInterestLimit
+      description: Interface is used to get future contract OI Limit.
+      parameters:
+      - name: symbol
+        in: query
+        description: "Trading pair, based on the symbolName, i.e. BTCUSDT"
+        required: false
+        schema:
+          type: string
+      - name: category
+        in: query
+        description: "Product type USDT-FUTURES USDT-M Futures COIN-FUTURES Coin-M Futures USDC-FUTURES USDC-M Futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/current-fund-rate:
+    get:
+      tags:
+      - Market
+      summary: Get Current Funding Rate
+      operationId: getCurrentFundingRate
+      description: Get current funding rate.
+      parameters:
+      - name: symbol
+        in: query
+        description: "Trading pair, based on the symbolName, i.e. BTCUSDT"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/discount-rate:
+    get:
+      tags:
+      - Market
+      summary: Get Discount Rate
+      operationId: getDiscountRate
+      description: Query discount rate applied to margin loans.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/history-candles:
+    get:
+      tags:
+      - Market
+      summary: Get Kline/Candlestick History
+      operationId: getKlineCandlestickHistory
+      description: Query historical Kline/candlestick data within the last 90 days.
+      parameters:
+      - name: category
+        in: query
+        description: "Product Type SPOT Spot trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: true
+        schema:
+          type: string
+      - name: interval
+        in: query
+        description: "Granularity 1m,3m,5m,15m,30m,1H,4H,6H,12H,1D"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "1m"
+          - "3m"
+          - "5m"
+          - "15m"
+          - "30m"
+          - "1H"
+          - "4H"
+          - "6H"
+          - "12H"
+          - "1D"
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix millisecond timestamp, e.g.,1672410780000 Request data after this start time (the maximum time query range is 90 days)"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix millisecond timestamp, e.g.,1672410781000 Request data before this end time (the maximum time query range is 90 days)"
+        required: false
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: "Candlestick type market, mark, index, premium. Default: market"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "market"
+          - "mark"
+          - "index"
+          - "premium"
+      - name: limit
+        in: query
+        description: "Limit per page Default:100. Maximum: 100"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/history-fund-rate:
+    get:
+      tags:
+      - Market
+      summary: Get Funding Rate History
+      operationId: getFundingRateHistory
+      description: Query historical funding rate records. The Funding interval varies by symbol and can be retrieved via the Instruments endpoint.
+      parameters:
+      - name: category
+        in: query
+        description: "Product Type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: true
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Page number Default: 1. Maximum: 100"
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default: 200. Maximum: 200"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/index-components:
+    get:
+      tags:
+      - Market
+      summary: Get Index Price Components
+      operationId: getIndexPriceComponents
+      description: Get index price components
+      parameters:
+      - name: symbol
+        in: query
+        description: "Trading pair, e.g. BTCUSDT"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/margin-loans:
+    get:
+      tags:
+      - Market
+      summary: Get Margin Loan
+      operationId: getMarginLoan
+      description: Query interest rates for margin loans.
+      parameters:
+      - name: coin
+        in: query
+        description: "Coin name e.g.,BTC"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/open-interest:
+    get:
+      tags:
+      - Market
+      summary: Get Open Interest
+      operationId: getOpenInterest
+      description: Query the total number of unsettled or open futures
+      parameters:
+      - name: category
+        in: query
+        description: "Product Type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/position-tier:
+    get:
+      tags:
+      - Market
+      summary: Get Position Tier
+      operationId: getPositionTier
+      description: Query the position tier info.
+      parameters:
+      - name: category
+        in: query
+        description: "Product type MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT, applies to Futures"
+        required: false
+        schema:
+          type: string
+      - name: coin
+        in: query
+        description: "Coin name e.g.,BTC, applies to Margin"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/proof-of-reserves:
+    get:
+      tags:
+      - Market
+      summary: Get Proof Of Reserves
+      operationId: getProofOfReserves
+      description: Get Proof Of Reserves
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/risk-reserve:
+    get:
+      tags:
+      - Market
+      summary: Get Risk Reserve
+      operationId: getRiskReserve
+      description: Query risk reserve records.
+      parameters:
+      - name: category
+        in: query
+        description: "Product type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: true
+        schema:
+          type: string
+      - name: marginCoin
+        in: query
+        description: "Margin coin, It is required when the category is COIN-FUTURES"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/instruments:
+    get:
+      tags:
+      - Market
+      summary: Get Instruments
+      operationId: getInstruments
+      description: Query the specifications for online trading pair instruments.
+      parameters:
+      - name: category
+        in: query
+        description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/orderbook:
+    get:
+      tags:
+      - Market
+      summary: Get OrderBook
+      operationId: getOrderbook
+      description: Query order book depth data.
+      parameters:
+      - name: category
+        in: query
+        description: "Product Type SPOT Spot trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Level Default: 5. Maximum: 200"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/market/tickers:
+    get:
+      tags:
+      - Market
+      summary: Get Tickers
+      operationId: getTickers
+      description: "Query real-time market data, including the latest price, 24-hour high/low, volume, bid, ask, and price change for available trading pairs."
+      parameters:
+      - name: category
+        in: query
+        description: "Product type SPOT Spot trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: symbol
+        in: query
+        description: "Symbol name e.g.,BTCUSDT"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/cancel-strategy-order:
+    post:
+      tags:
+      - Strategy
+      summary: Cancel Strategy Order
+      operationId: cancelStrategyOrder
+      description: Cancel strategy order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CancelStrategyOrderRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/history-strategy-orders:
+    get:
+      tags:
+      - Strategy
+      summary: History Strategy Orders
+      operationId: historyStrategyOrders
+      description: Get historical strategy orders
+      parameters:
+      - name: category
+        in: query
+        description: "Product type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: type
+        in: query
+        description: "Strategy Type tpslTake-Profit and Stop-Loss"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "tpsl"
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix timestamp in milliseconds e.g.,1597026383085"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix timestamp in milliseconds e.g.,1597026383085"
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default:100. Maximum:100"
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor Pagination is implemented by omitting the cursor in the first query and applying the cursor from the previous query for subsequent pages"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/unfilled-strategy-orders:
+    get:
+      tags:
+      - Strategy
+      summary: Unfilled Strategy Orders
+      operationId: unfilledStrategyOrders
+      description: Get unfilled strategy orders
+      parameters:
+      - name: category
+        in: query
+        description: "Product type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+      - name: type
+        in: query
+        description: "Strategy Type tpslTake-Profit and Stop-Loss"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "tpsl"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/modify-strategy-order:
+    post:
+      tags:
+      - Strategy
+      summary: Modify Strategy Order
+      operationId: modifyStrategyOrder
+      description: Modify strategy order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ModifyStrategyOrderRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/trade/place-strategy-order:
+    post:
+      tags:
+      - Strategy
+      summary: Place Strategy Order
+      operationId: placeStrategyOrder
+      description: |-
+        Place a strategy order
+        - **API Broker rebate identifier**:<br/>
+        The following code block needs to be added to the HTTP Header of the request.
+        > "X-CHANNEL-API-CODE":"your-channel-api-code"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PlaceStrategyOrderRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/create-sub-apikey:
+    post:
+      tags:
+      - Broker
+      summary: Create Broker Sub-Account API Key
+      operationId: createBrokerSubAccountApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateBrokerSubAccountApiKeyRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/create-sub:
+    post:
+      tags:
+      - Broker
+      summary: Create Broker Sub-Account
+      operationId: createBrokerSubAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateBrokerSubAccountRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/delete-sub-apikey:
+    post:
+      tags:
+      - Broker
+      summary: Delete Broker Subaccount Apikey
+      operationId: deleteBrokerSubaccountApikey
+      description: |-
+        - This endpoint has no response parameters.
+        - It returns the deletion result synchronously.
+        - Determine whether the deletion succeeded or failed (and the failure reason) based on the returned `code` and `msg`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeleteBrokerSubaccountApikeyRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/all-sub-deposit-withdrawal:
+    get:
+      tags:
+      - Broker
+      summary: Get All Broker Subaccount Deposit Withdrawal
+      operationId: getAllBrokerSubaccountDepositWithdrawal
+      parameters:
+      - name: startTime
+        in: query
+        description: "Record start time Unix timestamp in milliseconds. If both startTime and endTime are empty, the default query time range is yesterday 00:00–23:59 (UTC+0). The time range between startTime and endTime cannot exceed 7 days."
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "Record end time Unix timestamp in milliseconds. If both startTime and endTime are empty, the default query time range is yesterday 00:00–23:59 (UTC+0). The time range between startTime and endTime cannot exceed 7 days."
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Number of items per page default 100, maximum 100."
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor ID."
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: "Status pendingConfirming failFailed successSuccessful"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "pending"
+          - "fail"
+          - "success"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/commission:
+    get:
+      tags:
+      - Broker
+      summary: Get Broker Commission
+      operationId: getBrokerCommission
+      parameters:
+      - name: startTime
+        in: query
+        description: "Query start time Unix timestamp in milliseconds. If both startTime and endTime are omitted, the default query range is yesterday 00:00–23:59 (UTC+0). The interval between startTime and endTime for a single query cannot exceed 30 days."
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "Query end time Unix timestamp in milliseconds. If both startTime and endTime are omitted, the default query range is yesterday 00:00–23:59 (UTC+0). The interval between startTime and endTime for a single query cannot exceed 30 days."
+        required: false
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: "Number of items per page default 100, maximum 1000"
+        required: false
+        schema:
+          type: string
+      - name: pageNo
+        in: query
+        description: "Page number - default 1."
+        required: false
+        schema:
+          type: string
+      - name: bizType
+        in: query
+        description: "Business type spot futures - If not provided, commission data for all types will be returned."
+        required: false
+        schema:
+          type: string
+      - name: subBizType
+        in: query
+        description: "Business sub-type: spot_trade spot trading spot_margin spot margin usdt_futures USDT futures usdc_futures USDC futures coin_futures coin-margin futures When bizType=spot, this parameter can be spot_trade or spot_margin. When bizType=futures, this parameter can be usdt_futures, usdc_futures, or coin_futures."
+        required: false
+        schema:
+          type: string
+          enum:
+          - "spot_trade"
+          - "spot_margin"
+          - "usdt_futures"
+          - "usdc_futures"
+          - "coin_futures"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/query-sub-apikey:
+    get:
+      tags:
+      - Broker
+      summary: Get Broker Sub-Account API Key
+      operationId: getBrokerSubAccountApiKey
+      parameters:
+      - name: subUid
+        in: query
+        description: "Sub-account UID"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/sub-list:
+    get:
+      tags:
+      - Broker
+      summary: Get Broker Sub-Account List
+      operationId: getBrokerSubAccountList
+      parameters:
+      - name: limit
+        in: query
+        description: "Number of items per page - default 10, maximum 100."
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor ID Used for pagination. Omit it on the first call. For subsequent calls, pass in the last subUid returned by the previous query."
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: "Account status: normal normal freeze frozen"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "normal"
+          - "freeze"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/modify-sub-apikey:
+    post:
+      tags:
+      - Broker
+      summary: Modify Broker Sub-Account API Key
+      operationId: modifyBrokerSubAccountApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ModifyBrokerSubAccountApiKeyRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/modify-sub:
+    post:
+      tags:
+      - Broker
+      summary: Modify Broker Sub-Account
+      operationId: modifyBrokerSubAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ModifyBrokerSubAccountRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/sub-deposit-address:
+    post:
+      tags:
+      - Broker
+      summary: Get Broker Subaccount Deposit Address
+      operationId: getBrokerSubaccountDepositAddress
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/GetBrokerSubaccountDepositAddressRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/broker/sub-withdrawal:
+    post:
+      tags:
+      - Broker
+      summary: Broker Subaccount Withdrawal
+      operationId: brokerSubaccountWithdrawal
+      description: |-
+        Broker sub-account withdrawal API has restrictions and currently supports only the following currencies:
+        - BTC, ETH, USDT, USDC, TRX, XRP, LTC, SOL, BNB, FTM, DOGE, ADA, SHIB, UNI, SEI, SUI, POL, FIL, LINK, TON, ARB, OP, DOT,
+        AVAX
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/BrokerSubaccountWithdrawalRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/borrow:
+    post:
+      tags:
+      - Crypto Loans
+      summary: Borrow Coins
+      operationId: borrowCoins
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/BorrowCoinsRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/borrow-history:
+    get:
+      tags:
+      - Crypto Loans
+      summary: Get Borrow History
+      operationId: getBorrowHistory
+      description: Get Borrow History
+      parameters:
+      - name: orderId
+        in: query
+        description: "Order ID"
+        required: false
+        schema:
+          type: string
+      - name: loanCoin
+        in: query
+        description: "Borrowed coin"
+        required: false
+        schema:
+          type: string
+      - name: pledgeCoin
+        in: query
+        description: "Collateral coin"
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: "Status ROLLBACK: failed FORCE: liquidated REPAY: repaid"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "ROLLBACK"
+          - "FORCE"
+          - "REPAY"
+      - name: startTime
+        in: query
+        description: "Start time only supports querying data from the last 3 months"
+        required: true
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End time"
+        required: true
+        schema:
+          type: string
+      - name: pageNum
+        in: query
+        description: "Page number default is 1"
+        required: false
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: "Items per page default is 10，maximum is 100"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/borrow-ongoing:
+    get:
+      tags:
+      - Crypto Loans
+      summary: Get Borrow Ongoing
+      operationId: getBorrowOngoing
+      description: Get Borrow Ongoing
+      parameters:
+      - name: orderId
+        in: query
+        description: "Order ID"
+        required: false
+        schema:
+          type: string
+      - name: loanCoin
+        in: query
+        description: "Borrowed coin"
+        required: false
+        schema:
+          type: string
+      - name: pledgeCoin
+        in: query
+        description: "Collateral coin"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/coins:
+    get:
+      tags:
+      - Crypto Loans
+      summary: Get Loan Coins
+      operationId: getLoanCoins
+      description: Get Loan Coins
+      parameters:
+      - name: coin
+        in: query
+        description: "Coin name"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/debts:
+    get:
+      tags:
+      - Crypto Loans
+      summary: Get Loan Debts
+      operationId: getLoanDebts
+      description: Get Loan Debts
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/interest:
+    get:
+      tags:
+      - Crypto Loans
+      summary: Get Loan Interest
+      operationId: getLoanInterest
+      description: Get Loan Interest
+      parameters:
+      - name: loanCoin
+        in: query
+        description: "Coin to borrow e.g.BTC"
+        required: true
+        schema:
+          type: string
+      - name: pledgeCoin
+        in: query
+        description: "Collateral coin e.g.ETH"
+        required: true
+        schema:
+          type: string
+      - name: daily
+        in: query
+        description: "Pledge term: SEVEN 7 days THIRTY 30 days FLEXIBLE flexible"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SEVEN"
+          - "THIRTY"
+          - "FLEXIBLE"
+      - name: pledgeAmount
+        in: query
+        description: "Pledge Amount"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/reduces:
+    get:
+      tags:
+      - Crypto Loans
+      summary: Get Loan Reduces
+      operationId: getLoanReduces
+      description: Get Loan Reduces
+      parameters:
+      - name: orderId
+        in: query
+        description: "Order ID"
+        required: false
+        schema:
+          type: string
+      - name: loanCoin
+        in: query
+        description: "Borrowed coin"
+        required: false
+        schema:
+          type: string
+      - name: pledgeCoin
+        in: query
+        description: "Collateral coin"
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: "Liquidation status COMPLETE liquidated WAIT liquidation"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "COMPLETE"
+          - "WAIT"
+      - name: startTime
+        in: query
+        description: "Start time only supports querying data from the last 3 months"
+        required: true
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End time"
+        required: true
+        schema:
+          type: string
+      - name: pageNum
+        in: query
+        description: "Page number default is 1"
+        required: false
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: "Items per page default is 10，maximum is 100"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/pledge-rate-history:
+    get:
+      tags:
+      - Crypto Loans
+      summary: Get Pledge Rate History
+      operationId: getPledgeRateHistory
+      description: Get Pledge Rate History
+      parameters:
+      - name: orderId
+        in: query
+        description: "Order ID"
+        required: false
+        schema:
+          type: string
+      - name: reviseSide
+        in: query
+        description: "Adjustment direction down: transfer in, decrease up: transfer out, increase"
+        required: false
+        schema:
+          type: string
+          enum:
+          - "down"
+          - "up"
+      - name: pledgeCoin
+        in: query
+        description: "Collateral coin"
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Start time only supports querying data from the last 3 months"
+        required: true
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End time"
+        required: true
+        schema:
+          type: string
+      - name: pageNum
+        in: query
+        description: "Page number default is 1"
+        required: false
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: "Items per page default is 10，maximum is 100"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/repay-history:
+    get:
+      tags:
+      - Crypto Loans
+      summary: Get Repay History
+      operationId: getRepayHistory
+      description: Get Repay History
+      parameters:
+      - name: orderId
+        in: query
+        description: "Order ID"
+        required: false
+        schema:
+          type: string
+      - name: loanCoin
+        in: query
+        description: "Borrowed coin"
+        required: false
+        schema:
+          type: string
+      - name: pledgeCoin
+        in: query
+        description: "Collateral coin"
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Start time only supports querying data from the last 3 months"
+        required: true
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End time"
+        required: true
+        schema:
+          type: string
+      - name: pageNum
+        in: query
+        description: "Page number default is 1"
+        required: false
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: "Items per page default is 10，maximum is 100"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/repay:
+    post:
+      tags:
+      - Crypto Loans
+      summary: Repay Coins
+      operationId: repayCoins
+      description: Repay Coins
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RepayCoinsRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/loan/revise-pledge:
+    post:
+      tags:
+      - Crypto Loans
+      summary: Revise Pledge
+      operationId: revisePledge
+      description: Revise Pledge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RevisePledgeRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/ins-loan/bind-uid:
+    post:
+      tags:
+      - Inst Loan
+      summary: Bind/Unbind UID to Risk Unit
+      operationId: bindUnbindUidToRiskUnit
+      description: |-
+        Binding:
+        - The uid and riskUnitId belong to the same main account.
+        - The uid is not bound to any other risk unit.
+        Unbinding:
+        - The API key used for the call must belong to the main account or the lending-exclusive sub-account UID within the risk
+        unit.
+        - The uid is within the risk unit and is not equal to riskUnitId.
+        - The uid has a zero balance, or the riskUnitId has not_paid_off or in_progress loan orders.
+        The account mode must be set to Advanced Mode; Basic Mode is not supported.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/BindUnbindUidToRiskUnitRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/ins-loan/ensure-coins-convert:
+    get:
+      tags:
+      - Inst Loan
+      summary: Get Margin Coin Info
+      operationId: getMarginCoinInfo
+      description: Get Margin Coin Info
+      parameters:
+      - name: productId
+        in: query
+        description: "Product Id"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/ins-loan/ltv-convert:
+    get:
+      tags:
+      - Inst Loan
+      summary: Get LTV
+      operationId: getLtv
+      description: |-
+        Get LTV
+        1. If the riskUnitId parameter is not passed in, the account calling the interface must be an institutional exclusive lending unit account.
+        2. If this parameter has been provided, the UID carried in the parameter must belong to an institutional lending exclusive unit account, and the account calling the API must be the primary account.
+        3. Update frequency: 1s
+      parameters:
+      - name: riskUnitId
+        in: query
+        description: "Risk Unit ID"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/ins-loan/loan-order:
+    get:
+      tags:
+      - Inst Loan
+      summary: Get Loan Orders
+      operationId: getLoanOrders
+      description: Get Loan Orders
+      parameters:
+      - name: orderId
+        in: query
+        description: "oan order id. If not passed, then return all orders, sort by loanTime in descend"
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "The start timestamp (ms)"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "The end timestamp (ms)"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/ins-loan/product-infos:
+    get:
+      tags:
+      - Inst Loan
+      summary: Get Product Info
+      operationId: getProductInfo
+      description: Get Product Info
+      parameters:
+      - name: productId
+        in: query
+        description: "Product Id"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/ins-loan/repaid-history:
+    get:
+      tags:
+      - Inst Loan
+      summary: Get Repayment Orders
+      operationId: getRepaymentOrders
+      description: |-
+        Get Repayment Orders
+        - By default, query the data of the past two years.
+        - At most, support querying the data of the past two years.
+        - Only display the data of successfully repaid orders.
+        - Only display the repayment orders under the unified account. The orders under the spot account can be queried through
+        the v2 version.
+      parameters:
+      - name: startTime
+        in: query
+        description: "The start timestamp (ms)"
+        required: false
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "The end timestamp (ms)"
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit default 100; max 100"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/ins-loan/risk-unit:
+    get:
+      tags:
+      - Inst Loan
+      summary: Get Risk Unit
+      operationId: getRiskUnit
+      description: "Get Risk Unit,Only the parent account API Key can use this endpoint"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/ins-loan/symbols:
+    get:
+      tags:
+      - Inst Loan
+      summary: Get Trade Symbols
+      operationId: getTradeSymbols
+      description: Get Trade Symbols
+      parameters:
+      - name: productId
+        in: query
+        description: "Product Id"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/ins-loan/transfered:
+    get:
+      tags:
+      - Inst Loan
+      summary: Get Transferred Quantity
+      operationId: getTransferredQuantity
+      description: Get Transferred Quantity
+      parameters:
+      - name: userId
+        in: query
+        description: "User Id (Master account or sub-accounts)"
+        required: false
+        schema:
+          type: string
+      - name: coin
+        in: query
+        description: "Coin"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+  /api/v3/tax/records:
+    get:
+      tags:
+      - Tax
+      summary: Get Unified Account Tax Records
+      operationId: getUnifiedAccountTaxRecords
+      description: "Data query range: 366 days"
+      parameters:
+      - name: bizType
+        in: query
+        description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures OTHER Other"
+        required: true
+        schema:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          - "OTHER"
+      - name: marginType
+        in: query
+        description: "Margin Type: isolated isolated margin crossed cross margin. This field is effective when category=MARGIN. If not specified, the default is crossed (cross margin)."
+        required: false
+        schema:
+          type: string
+          enum:
+          - "isolated"
+          - "crossed"
+      - name: coin
+        in: query
+        description: "Coin name - If not specified, tax records for all coins will be returned."
+        required: false
+        schema:
+          type: string
+      - name: startTime
+        in: query
+        description: "Start timestamp A Unix timestamp in milliseconds e.g.,1597026383085"
+        required: true
+        schema:
+          type: string
+      - name: endTime
+        in: query
+        description: "End timestamp A Unix timestamp in milliseconds e.g.,1597026383185 The time range between startTime and endTime must not exceed 7 days"
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: "Limit per page Default:500. Maximum:500"
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: "Cursor ID - Used for pagination. Do not include it for the first query. When querying the second page and subsequent data, use the id returned from the previous query. The interface will then return the data for the next page."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BitgetResponse"
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: ACCESS-KEY
+      description: "Bitget API key. Maps to the {{apiKey}} Postman variable."
+    apiSignAuth:
+      type: apiKey
+      in: header
+      name: ACCESS-SIGN
+      description: "HMAC SHA256 request signature, Base64 encoded (sign = HMAC(timestamp + method + requestPath + body)). Derived from {{apiSecret}}."
+    apiTimestampAuth:
+      type: apiKey
+      in: header
+      name: ACCESS-TIMESTAMP
+      description: Request timestamp in milliseconds.
+    apiPassphraseAuth:
+      type: apiKey
+      in: header
+      name: ACCESS-PASSPHRASE
+      description: "API passphrase. Maps to the {{passphrase}} Postman variable."
+  schemas:
+    BitgetResponse:
+      type: object
+      description: "Standard Bitget API response envelope. The shape of `data` is endpoint-specific and is not provided by the source collection (TODO: refine per endpoint)."
+      properties:
+        code:
+          type: string
+          description: "Response code, \"00000\" on success"
+          example: "00000"
+        msg:
+          type: string
+          description: Response message
+          example: success
+        requestTime:
+          type: integer
+          format: int64
+          description: Server response timestamp in milliseconds
+          example: 1690000000000
+        data:
+          description: Endpoint-specific payload
+          nullable: true
+    AdjustAccountModeRequest:
+      type: object
+      required: ["mode"]
+      properties:
+        mode:
+          type: string
+          enum:
+          - "basic"
+          - "advanced"
+          description: "Account mode basic Basic mode advanced Advanced mode"
+        targetUid:
+          type: string
+          description: "Target account UID. If not provided, it defaults to the currently operated account. If a sub-account UID is provided, it indicates the master account is operating on the sub-account."
+      example:
+        mode: ""
+        targetUid: ""
+    BatchCancelRequest:
+      type: object
+      required: ["category", "symbol"]
+      properties:
+        orderId:
+          type: string
+          description: "Order ID Either clientOid or orderId must be provided. If both are present or do not match, orderId will take priority"
+        clientOid:
+          type: string
+          description: "Client order ID Either clientOid or orderId must be provided. If both are present or do not match, orderId will take priority"
+        category:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures All orders must have the same category"
+        symbol:
+          type: string
+          description: "Symbol name e.g.,BTCUSDT"
+      example:
+        orderId: ""
+        clientOid: ""
+        category: ""
+        symbol: ""
+    BatchModifyOrdersRequest:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: "Order ID Either orderId or clientOid must be provided If both orderId and clientOid are provided simultaneously, orderId takes higher priority"
+        clientOid:
+          type: string
+          description: "Client order ID Either orderId or clientOid must be provided If both orderId and clientOid are provided simultaneously, orderId takes higher priority"
+        qty:
+          type: string
+          description: "Order quantity Base coin Either qty or price must be provided"
+        price:
+          type: string
+          description: "Order price Either qty or price must be provided"
+        autoCancel:
+          type: string
+          enum:
+          - "yes"
+          - "no"
+          description: "Will the original order be canceled if the order modification fails yes: Cancel no: Not cancel（default）"
+        symbol:
+          type: string
+          description: "Symbol name e.g.,BTCUSDT"
+        category:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+      example:
+        orderId: ""
+        clientOid: ""
+        qty: ""
+        price: ""
+        autoCancel: ""
+        symbol: ""
+        category: ""
+    BatchOrderRequest:
+      type: object
+      required: ["category", "symbol", "qty", "side", "orderType"]
+      properties:
+        category:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures All orders must have the same category"
+        symbol:
+          type: string
+          description: "Symbol name e.g.,BTCUSDT"
+        qty:
+          type: string
+          description: "Order quantity Spot/Margin For market buy orders,the unit is quote coin For limit and market sell orders, the unit is base coin USDT/USDC-Futures The unit is base coin COIN-Futures The unit is quote coin"
+        price:
+          type: string
+          description: "Order price This field is required when orderType is limit"
+        side:
+          type: string
+          enum:
+          - "buy"
+          - "sell"
+          description: "Order side buy/sell"
+        orderType:
+          type: string
+          enum:
+          - "limit"
+          - "market"
+          description: "Order type limit/market"
+        timeInForce:
+          type: string
+          enum:
+          - "ioc"
+          - "fok"
+          - "gtc"
+          - "post_only"
+          description: "Time in force ioc Immediate or cancel. It must be executed immediately, with any unfilled portion canceled. fok Fill or kill. It must be fully executed immediately, or it is canceled entirely. gtc Good 'til canceled. It remains active until it is either filled or manually canceled. post_only Post only. It will only be added to the order book as a maker This field is required when orderType is limit. If omitted, it defaults to gtc"
+        posSide:
+          type: string
+          enum:
+          - "long"
+          - "short"
+          description: "Position side long/short This field is required in hedge-mode position. Available only for futures"
+        clientOid:
+          type: string
+          description: "Client order ID"
+        stpMode:
+          type: string
+          enum:
+          - "none"
+          - "cancel_taker"
+          - "cancel_maker"
+          - "cancel_both"
+          description: "STP Mode, default none none not setting STP cancel_taker cancel taker order cancel_maker cancel maker order cancel_both cancel both of taker and maker orders"
+      example:
+        category: ""
+        symbol: ""
+        qty: ""
+        price: ""
+        side: ""
+        orderType: ""
+        timeInForce: ""
+        posSide: ""
+        clientOid: ""
+        stpMode: ""
+    BindUnbindUidToRiskUnitRequest:
+      type: object
+      required: ["uid", "operate"]
+      properties:
+        riskUnitId:
+          type: string
+          description: "Risk Unit ID (Required for parent account calls, not required for risk unit account calls)"
+        uid:
+          type: string
+          description: "Sub UID（limit 50 UIDS for one Risk Unit）"
+        operate:
+          type: string
+          enum:
+          - "bind"
+          - "unbind"
+          description: "bind Bind unbind Unbind"
+      example:
+        riskUnitId: ""
+        uid: ""
+        operate: ""
+    BorrowCoinsRequest:
+      type: object
+      required: ["loanCoin", "pledgeCoin", "daily"]
+      properties:
+        loanCoin:
+          type: string
+          description: "Coin to borrow e.g.BTC"
+        pledgeCoin:
+          type: string
+          description: "Collateral coin e.g.ETH"
+        daily:
+          type: string
+          enum:
+          - "SEVEN"
+          - "THIRTY"
+          - "FLEXIBLE"
+          description: "Pledge term: SEVEN 7 days THIRTY 30 days FLEXIBLE flexible"
+        pledgeAmount:
+          type: string
+          description: "Collateral amount choose one of pledgeAmount or loanAmount"
+        loanAmount:
+          type: string
+          description: "Borrow amount choose one of loanAmount or pledgeAmount"
+      example:
+        loanCoin: ""
+        pledgeCoin: ""
+        daily: ""
+        pledgeAmount: ""
+        loanAmount: ""
+    BrokerSubaccountWithdrawalRequest:
+      type: object
+      required: ["subUid", "coin", "dest", "address", "amount"]
+      properties:
+        subUid:
+          type: string
+          description: "Sub-account UID"
+        coin:
+          type: string
+          description: "coin name"
+        dest:
+          type: string
+          enum:
+          - "on_chain"
+          - "internal_transfer"
+          description: "Withdrawal method: on_chain on-chain withdrawal internal_transfer internal transfer"
+        chain:
+          type: string
+          description: "Chain name- if this parameter is not provided, it defaults to the coin’s main chain"
+        address:
+          type: string
+          description: "Withdrawal address- when using on-chain withdrawal, enter the on-chain address; when using internal transfer, enter the UID"
+        amount:
+          type: string
+          description: "Withdrawal amount"
+        tag:
+          type: string
+          description: "Tag - used for some chains (e.g., EOS memo, TON comment)"
+        clientOid:
+          type: string
+          description: "Custom order ID"
+      example:
+        subUid: ""
+        coin: ""
+        dest: ""
+        chain: ""
+        address: ""
+        amount: ""
+        tag: ""
+        clientOid: ""
+    CancelAllOrdersRequest:
+      type: object
+      required: ["category"]
+      properties:
+        category:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        symbol:
+          type: string
+          description: "Symbol name e.g.,BTCUSDT If no symbol is provided, all pending orders in the corresponding category will be closed."
+      example:
+        category: ""
+        symbol: ""
+    CancelOrderRequest:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: "Order ID Either clientOid or orderId must be provided. If both are present or do not match, orderId will take priority"
+        clientOid:
+          type: string
+          description: "Client order ID Either clientOid or orderId must be provided. If both are present or do not match, orderId will take priority"
+        category:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+      example:
+        orderId: ""
+        clientOid: ""
+        category: ""
+    CancelStrategyOrderRequest:
+      type: object
+      required: ["orderId"]
+      properties:
+        orderId:
+          type: string
+          description: "Order ID Either orderId or clientOid must be provided If both orderId and clientOid are provided simultaneously, orderId takes higher priority"
+        clientOid:
+          type: string
+          description: "Client order ID Either orderId or clientOid must be provided If both orderId and clientOid are provided simultaneously, orderId takes higher priority"
+      example:
+        orderId: ""
+        clientOid: ""
+    CloseAllPositionsRequest:
+      type: object
+      required: ["category"]
+      properties:
+        category:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        symbol:
+          type: string
+          description: "Symbol name e.g.,BTCUSDT If no symbol is provided, all positions in the corresponding category will be closed."
+        posSide:
+          type: string
+          enum:
+          - "long"
+          - "short"
+          description: "Position side long/short If this field is provided, only the position in the corresponding side will be closed."
+      example:
+        category: ""
+        symbol: ""
+        posSide: ""
+    CountdownCancelAllRequest:
+      type: object
+      required: ["countdown"]
+      properties:
+        countdown:
+          type: string
+          description: "Reconnect Window - Unit: seconds - Positive integer, range: [5, 60]. The minimum countdown is 5 second, and the maximum is 60 seconds. Filling in 0 cancels the countdown order cancellation function."
+      example:
+        countdown: ""
+    CreateAgentSubAccountRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        passphrase:
+          type: string
+        note:
+          type: string
+      example:
+        username: ""
+        passphrase: ""
+        note: ""
+    CreateBrokerSubAccountApiKeyRequest:
+      type: object
+      required: ["subUid", "passphrase", "label", "ipList", "permType", "permList"]
+      properties:
+        subUid:
+          type: string
+          description: "Sub-account UID"
+        passphrase:
+          type: string
+          description: "Passphrase required to call the API. If lost, please create a new API key."
+        label:
+          type: string
+          description: "label"
+        ipList:
+          type: string
+          description: "IP whitelist up to 30 entries can be provided"
+        permType:
+          type: string
+          enum:
+          - "read_and_write"
+          - "readonly"
+          description: "Permission type: read_and_write read & write readonly read-only"
+        permList:
+          type: string
+          enum:
+          - "uta_trade"
+          - "uta_mgt"
+          - "withdraw"
+          description: "Permission list: uta_trade UTA trading uta_mgt UTA management withdraw (permType must be read_and_write)"
+      example:
+        subUid: ""
+        passphrase: ""
+        label: ""
+        ipList: ""
+        permType: ""
+        permList: ""
+    CreateBrokerSubAccountRequest:
+      type: object
+      required: ["subaccountName", "label"]
+      properties:
+        subaccountName:
+          type: string
+          description: "Sub-account username."
+        label:
+          type: string
+          description: "label up to a maximum of 50 characters."
+      example:
+        subaccountName: ""
+        label: ""
+    CreateSubAccountApiKeyRequest:
+      type: object
+      required: ["subUid", "note", "type", "passphrase", "permissions", "ips"]
+      properties:
+        subUid:
+          type: string
+          description: "Sub-account ID"
+        note:
+          type: string
+          description: "Note Name The note needs to start with a letter and supports [0-9], [a-z], [A-Z], as well as [-,_]"
+        type:
+          type: string
+          enum:
+          - "read_write"
+          - "read_only"
+          description: "Permission Type read_write Read/Write read_only Read-only"
+        passphrase:
+          type: string
+          description: "passphrase A combination of 8 to 32 characters of letters and numbers"
+        permissions:
+          type: array
+          items:
+            type: string
+            enum:
+            - "uta_mgt"
+            - "uta_trade"
+          description: "permission values <ul><li>Unified Account Permissions: uta_mgt Unified Account Management uta_trade Unified Account Trading </li></ul>"
+        ips:
+          type: array
+          items:
+            type: string
+          description: "Withdrawal Whitelist IP Multiple IP addresses are supported A maximum of 30 IPs can be bound to a single key Only supports IPv4"
+      example:
+        subUid: ""
+        note: ""
+        type: ""
+        passphrase: ""
+        permissions: []
+        ips: []
+    CreateSubAccountRequest:
+      type: object
+      required: ["username"]
+      properties:
+        username:
+          type: string
+          description: "Generate a virtual email address username. It can only contain lowercase letters and cannot exceed 20 characters."
+        accountMode:
+          type: string
+          enum:
+          - "classic"
+          - "unified"
+          description: "Sub-account Mode classic Classic Account Sub-account unified Unified Account Sub-account"
+        note:
+          type: string
+          description: "Note, cannot exceed 50 characters."
+      example:
+        username: ""
+        accountMode: ""
+        note: ""
+    DeleteBrokerSubaccountApikeyRequest:
+      type: object
+      required: ["subUid", "apiKey"]
+      properties:
+        subUid:
+          type: string
+          description: "Sub-account UID"
+        apiKey:
+          type: string
+          description: "API Key"
+      example:
+        subUid: ""
+        apiKey: ""
+    DeleteSubAccountApiKeyRequest:
+      type: object
+      required: ["apikey"]
+      properties:
+        apikey:
+          type: string
+          description: "The sub-account API Key"
+      example:
+        apikey: ""
+    FreezeUnfreezeSubAccountRequest:
+      type: object
+      required: ["subUid", "operation"]
+      properties:
+        subUid:
+          type: string
+          description: "Sub-account ID to be frozen/unfrozen"
+        operation:
+          type: string
+          enum:
+          - "freeze"
+          - "unfreeze"
+          description: "Operation Type： freeze Freeze unfreeze Unfreeze |"
+      example:
+        subUid: ""
+        operation: ""
+    GetBrokerSubaccountDepositAddressRequest:
+      type: object
+      required: ["subUid", "coin"]
+      properties:
+        subUid:
+          type: string
+          description: "Sub-account UID"
+        coin:
+          type: string
+          description: "Coin name"
+        chain:
+          type: string
+          description: "Chain name If this parameter is not provided, the default will be the coin’s primary (main) chain"
+      example:
+        subUid: ""
+        coin: ""
+        chain: ""
+    GetMaxOpenAvailableRequest:
+      type: object
+      required: ["category", "symbol", "orderType", "side"]
+      properties:
+        category:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        symbol:
+          type: string
+          description: "Symbol name e.g.,BTCUSDT"
+        orderType:
+          type: string
+          enum:
+          - "limit"
+          - "market"
+          description: "Order type limit/market"
+        side:
+          type: string
+          description: "Transaction direction buy/sell"
+        price:
+          type: string
+          description: "Order price This field is required when orderType is limit"
+        size:
+          type: string
+          description: "Order quantity, base coin"
+      example:
+        category: ""
+        symbol: ""
+        orderType: ""
+        side: ""
+        price: ""
+        size: ""
+    GetSubDepositRecordsRequest:
+      type: object
+      properties:
+        coin:
+          type: string
+        subUid:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        limit:
+          type: string
+        cursor:
+          type: string
+      example:
+        coin: ""
+        subUid: ""
+        startTime: ""
+        endTime: ""
+        limit: ""
+        cursor: ""
+    MainSubAccountTransferRequest:
+      type: object
+      required: ["fromType", "toType", "amount", "coin", "fromUserId", "toUserId", "clientOid"]
+      properties:
+        fromType:
+          type: string
+          enum:
+          - "spot"
+          - "p2p"
+          - "usdt_futures"
+          - "coin_futures"
+          - "usdc_futures"
+          - "crossed_margin"
+          - "uta"
+          description: "Transferring Account Type spot Spot account/Funding account p2p P2P account/OTC account usdt_futures USDT-Margined Futures Account coin_futures Coin-Margined Futures Account usdc_futures USDC Futures Account crossed_margin Cross Margin Account uta Unified Account The above enumerations apply to the main account If it is a sub-account: Unified account sub-account only supports uta and spot Classic account sub-account does not support uta and p2p"
+        toType:
+          type: string
+          enum:
+          - "spot"
+          - "p2p"
+          - "usdt_futures"
+          - "coin_futures"
+          - "usdc_futures"
+          - "crossed_margin"
+          - "uta"
+          description: "Receiving Account Type spot Spot account/Funding account p2p P2P account/OTC account usdt_futures USDT-Margined Futures Account coin_futures Coin-Margined Futures Account usdc_futures USDC Futures Account crossed_margin Cross Margin Account uta Unified Account The above enumerations apply to the main account If it is a sub-account: Unified account sub-account only supports uta and spot Classic account sub-account does not support uta and p2p"
+        amount:
+          type: string
+          description: "Amount to Transfer In"
+        coin:
+          type: string
+          description: "Transfer Currency, e.g., BTC"
+        fromUserId:
+          type: string
+          description: "Transferring Account UID"
+        toUserId:
+          type: string
+          description: "Receiving Account UID"
+        clientOid:
+          type: string
+          description: "clientOid,Cannot exceed 64 characters."
+        allowBorrow:
+          type: string
+      example:
+        fromType: ""
+        toType: ""
+        amount: ""
+        coin: ""
+        fromUserId: ""
+        toUserId: ""
+        clientOid: ""
+        allowBorrow: ""
+    ModifyBrokerSubAccountApiKeyRequest:
+      type: object
+      required: ["subUid", "passphrase", "apiKey"]
+      properties:
+        subUid:
+          type: string
+          description: "Sub-account UID"
+        passphrase:
+          type: string
+          description: "Passphrase required to call the API; if lost, please recreate the API key"
+        apiKey:
+          type: string
+          description: "API Key"
+        label:
+          type: string
+          description: "label"
+        ipList:
+          type: string
+          description: "IP whitelist up to 30 entries"
+        permType:
+          type: string
+          enum:
+          - "read_and_write"
+          - "readonly"
+          description: "Permission type: read_and_write read & write readonly read-only"
+        permList:
+          type: string
+          enum:
+          - "uta_trade"
+          - "uta_mgt"
+          - "withdraw"
+          description: "Permission list: uta_trade UTA trading uta_mgt UTA management withdraw (permType must be read_and_write)"
+      example:
+        subUid: ""
+        passphrase: ""
+        apiKey: ""
+        label: ""
+        ipList: ""
+        permType: ""
+        permList: ""
+    ModifyBrokerSubAccountRequest:
+      type: object
+      required: ["subUid"]
+      properties:
+        subUid:
+          type: string
+          description: "Sub-account UID"
+        status:
+          type: string
+          description: "Sub-account status: normal freeze"
+        permList:
+          type: string
+          enum:
+          - "spot_trade"
+          - "contract_trade"
+          - "margin_trade"
+          - "deposit"
+          description: "Permission list withdraw transfer spot_trade spot trading contract_trade futures trading margin_trademargin trading deposit deposit permission"
+      example:
+        subUid: ""
+        status: ""
+        permList: ""
+    ModifyStrategyOrderRequest:
+      type: object
+      required: ["orderId", "qty"]
+      properties:
+        orderId:
+          type: string
+          description: "Order ID Either orderId or clientOid must be provided If both orderId and clientOid are provided simultaneously, orderId takes higher priority"
+        clientOid:
+          type: string
+          description: "Client order ID Either orderId or clientOid must be provided If both orderId and clientOid are provided simultaneously, orderId takes higher priority"
+        qty:
+          type: string
+          description: "Order Quantity Can be modified under partial take-profit/stop-loss mode, and the unit is in the base coin"
+        tpTriggerBy:
+          type: string
+          enum:
+          - "market"
+          - "mark"
+          description: "Take-Profit Trigger Type market: Market Price mark: Mark Price"
+        slTriggerBy:
+          type: string
+          enum:
+          - "market"
+          - "mark"
+          description: "Stop-Loss Trigger Type market: Market Price mark: Mark Price"
+        takeProfit:
+          type: string
+          description: "Take-Profit Trigger Price"
+        stopLoss:
+          type: string
+          description: "Stop-Loss Trigger Price"
+        tpOrderType:
+          type: string
+          enum:
+          - "limit"
+          - "market"
+          description: "Take-Profit Trigger Strategy Order Type limit: Limit Order market: Market Order"
+        slOrderType:
+          type: string
+          enum:
+          - "limit"
+          - "market"
+          description: "Stop-Loss Trigger Strategy Order Type limit: Limit Order market: Market Order"
+        tpLimitPrice:
+          type: string
+          description: "Take-Profit Strategy Order Execution Price This field is only valid for limit orders (when tpOrderType=limit); it is ignored for market orders."
+        slLimitPrice:
+          type: string
+          description: "Stop-Loss Strategy Order Execution Price This field is only valid for limit orders (when slOrderType=limit); it is ignored for market orders"
+      example:
+        orderId: ""
+        clientOid: ""
+        qty: ""
+        tpTriggerBy: ""
+        slTriggerBy: ""
+        takeProfit: ""
+        stopLoss: ""
+        tpOrderType: ""
+        slOrderType: ""
+        tpLimitPrice: ""
+        slLimitPrice: ""
+    ModifySubAccountApiKeyRequest:
+      type: object
+      required: ["apikey", "passphrase"]
+      properties:
+        apikey:
+          type: string
+          description: "Sub-account API Key"
+        passphrase:
+          type: string
+          description: "passphrase A combination of 8 to 32 characters of letters and numbers"
+        type:
+          type: string
+          enum:
+          - "read_write"
+          - "read_only"
+          description: "Permission Type read_write Read/Write read_only Read-only This parameter is required when permissions has a value."
+        permissions:
+          type: array
+          items:
+            type: string
+            enum:
+            - "uta_mgt"
+            - "uta_trade"
+          description: "permission values <ul><li>Unified Account Permissions: uta_mgt Unified Account Management uta_trade Unified Account Trading </li></ul>This parameter is required when type has a value."
+        ips:
+          type: array
+          items:
+            type: string
+          description: "Withdrawal Whitelist IP <ul><li>If not provided, the IP address will not be modified.</li><li>If an empty value is provided, the withdrawal whitelist will be deleted.</li></ul>Multiple IP addresses are supported A maximum of 30 IPs can be bound to a single key Only supports IPv4"
+      example:
+        apikey: ""
+        passphrase: ""
+        type: ""
+        permissions: []
+        ips: []
+    PlaceOrderRequest:
+      type: object
+      required: ["category", "symbol", "qty", "side", "orderType"]
+      properties:
+        category:
+          type: string
+          enum:
+          - "SPOT"
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type SPOT Spot trading MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        symbol:
+          type: string
+          description: "Symbol name e.g.,BTCUSDT"
+        qty:
+          type: string
+          description: "Order quantity Spot/Margin For market buy orders,the unit is quote coin For limit and market sell orders, the unit is base coin USDT/USDC-Futures The unit is base coin COIN-Futures The unit is quote coin"
+        price:
+          type: string
+          description: "Order price This field is required when the order type is a limit order . This field is not applicable when the order type is a market order."
+        side:
+          type: string
+          enum:
+          - "buy"
+          - "sell"
+          description: "Order side buy/sell"
+        orderType:
+          type: string
+          enum:
+          - "limit"
+          - "market"
+          description: "Order type limit/market"
+        timeInForce:
+          type: string
+          enum:
+          - "ioc"
+          - "fok"
+          - "gtc"
+          - "post_only"
+          description: "Time in force ioc Immediate or cancel. It must be executed immediately, with any unfilled portion canceled. fok Fill or kill. It must be fully executed immediately, or it is canceled entirely. gtc Good 'til canceled. It remains active until it is either filled or manually canceled. post_only Post only. It will only be added to the order book as a maker. This field is required when orderType is limit. If omitted, it defaults to gtc"
+        posSide:
+          type: string
+          enum:
+          - "long"
+          - "short"
+          description: "Position side long/short This field is required in hedge-mode position. Available only for futures"
+        clientOid:
+          type: string
+          description: "Client order ID"
+        reduceOnly:
+          type: string
+          enum:
+          - "yes"
+          - "no"
+          description: "Reduce-only identifier yes/no, default no; yes indicates that your position may only be reduced in size upon the activation of this order"
+        stpMode:
+          type: string
+          enum:
+          - "none"
+          - "cancel_taker"
+          - "cancel_maker"
+          - "cancel_both"
+          description: "STP Mode(Self Trade Prevention) none: not setting STP(default) cancel_taker: cancel taker order cancel_maker: cancel maker order cancel_both: cancel both of taker and maker orders"
+        tpTriggerBy:
+          type: string
+          enum:
+          - "market"
+          - "mark"
+          description: "Preset Take-Profit Trigger Type market: Market Price mark: Mark Price If not specified, the default value is market price Note: This field is only valid for the contract business lines: USDT-Futures, COIN-Futures, and USDC-Futures."
+        slTriggerBy:
+          type: string
+          enum:
+          - "market"
+          - "mark"
+          description: "Preset Stop-Loss Trigger Type market: Market Price mark: Mark Price If not filled in, the default value is market price Note: This field is only valid for the contract business lines: USDT-Futures, COIN-Futures, and USDC-Futures"
+        takeProfit:
+          type: string
+          description: "Preset Take-Profit Trigger Price"
+        stopLoss:
+          type: string
+          description: "Preset Stop-Loss Trigger Price"
+        tpOrderType:
+          type: string
+          enum:
+          - "limit"
+          - "market"
+          description: "Take-Profit Trigger Strategy Order Type limit: Limit Order market: Market Order"
+        slOrderType:
+          type: string
+          enum:
+          - "limit"
+          - "market"
+          description: "Stop-Loss Trigger Strategy Order Type limit: Limit Order market: Market Order"
+        tpLimitPrice:
+          type: string
+          description: "Take-Profit Strategy Order Execution Price This field is only valid for limit orders (when tpOrderType=limit); it is ignored for market orders."
+        slLimitPrice:
+          type: string
+          description: "Stop-Loss Strategy Order Execution Price This field is only valid for limit orders (when slOrderType=limit); it is ignored for market orders."
+      example:
+        category: ""
+        symbol: ""
+        qty: ""
+        price: ""
+        side: ""
+        orderType: ""
+        timeInForce: ""
+        posSide: ""
+        clientOid: ""
+        reduceOnly: ""
+        stpMode: ""
+        tpTriggerBy: ""
+        slTriggerBy: ""
+        takeProfit: ""
+        stopLoss: ""
+        tpOrderType: ""
+        slOrderType: ""
+        tpLimitPrice: ""
+        slLimitPrice: ""
+    PlaceStrategyOrderRequest:
+      type: object
+      required: ["category", "symbol", "qty", "posSide"]
+      properties:
+        category:
+          type: string
+          enum:
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type USDT-FUTURES USDT futures COIN-FUTURES Coin-M futures USDC-FUTURES USDC futures"
+        symbol:
+          type: string
+          description: "Symbol name e.g.,BTCUSDT"
+        clientOid:
+          type: string
+          description: "Client order ID The idempotent validity period is six hours (not fully guaranteed)"
+        type:
+          type: string
+          enum:
+          - "tpsl"
+          description: "Strategy Type tpslTake-Profit and Stop-Loss Default:tpsl"
+        tpslMode:
+          type: string
+          enum:
+          - "full"
+          - "partial"
+          description: "Take-Profit and Stop-Loss Mode fullAll Positions Take-Profit and Stop-Loss partialPartial Position Take-Profit and Stop-Loss If left blank, the default value is full"
+        qty:
+          type: string
+          description: "Order Quantity This is a required field when tpslMode=partial, and the unit is in the base coin"
+        posSide:
+          type: string
+          enum:
+          - "long"
+          - "short"
+          description: "Position side long/short"
+        tpTriggerBy:
+          type: string
+          enum:
+          - "market"
+          - "mark"
+          description: "Take-Profit Trigger Type market: Market Price mark: Mark Price If not specified, the default value is market price"
+        slTriggerBy:
+          type: string
+          enum:
+          - "market"
+          - "mark"
+          description: "Stop-Loss Trigger Type market: Market Price mark: Mark Price If not filled in, the default value is market price"
+        takeProfit:
+          type: string
+          description: "Take-Profit Trigger Price"
+        stopLoss:
+          type: string
+          description: "Stop-Loss Trigger Price"
+        tpOrderType:
+          type: string
+          enum:
+          - "limit"
+          - "market"
+          description: "Take-Profit Trigger Strategy Order Type limit: Limit Order market: Market Order If not filled in, the default value is market price"
+        slOrderType:
+          type: string
+          enum:
+          - "limit"
+          - "market"
+          description: "Stop-Loss Trigger Strategy Order Type limit: Limit Order market: Market Order If not filled in, the default value is market price"
+        tpLimitPrice:
+          type: string
+          description: "Take-Profit Strategy Order Execution Price This field is only valid for limit orders (when tpOrderType=limit); it is ignored for market orders."
+        slLimitPrice:
+          type: string
+          description: "Stop-Loss Strategy Order Execution Price This field is only valid for limit orders (when slOrderType=limit); it is ignored for market orders"
+      example:
+        category: ""
+        symbol: ""
+        clientOid: ""
+        type: ""
+        tpslMode: ""
+        qty: ""
+        posSide: ""
+        tpTriggerBy: ""
+        slTriggerBy: ""
+        takeProfit: ""
+        stopLoss: ""
+        tpOrderType: ""
+        slOrderType: ""
+        tpLimitPrice: ""
+        slLimitPrice: ""
+    RepayCoinsRequest:
+      type: object
+      required: ["orderId", "method", "repayAll"]
+      properties:
+        orderId:
+          type: string
+          description: "Order ID"
+        method:
+          type: string
+          enum:
+          - "borrowed_coin"
+          - "collateral"
+          description: "Repayment method borrowed_coinborrowed coin collateralcollateral"
+        repayAll:
+          type: string
+          description: "Repay in full yes no If yes, the repayment amount will be ignored"
+        amount:
+          type: string
+          description: "Repayment amount Required when repayAll=no"
+        repayUnlock:
+          type: string
+          enum:
+          - "yes"
+          - "no"
+          description: "Whether to redeem collateral yesredeem nodo not redeem Default is no if omitted. Not effective when repayAll=yes"
+      example:
+        orderId: ""
+        method: ""
+        repayAll: ""
+        amount: ""
+        repayUnlock: ""
+    RepayRequest:
+      type: object
+      required: ["repayableCoinList", "paymentCoinList"]
+      properties:
+        repayableCoinList:
+          type: array
+          description: "Repayable coin list"
+          items:
+            type: string
+        paymentCoinList:
+          type: array
+          description: "Payment coin list"
+          items:
+            type: string
+      example:
+        repayableCoinList:
+        - ""
+        paymentCoinList:
+        - ""
+    RevisePledgeRequest:
+      type: object
+      required: ["orderId", "amount", "pledgeCoin"]
+      properties:
+        orderId:
+          type: string
+          description: "Order ID"
+        amount:
+          type: string
+          description: "Adjustment amount"
+        pledgeCoin:
+          type: string
+          description: "Collateral coin"
+        reviseType:
+          type: string
+          enum:
+          - "OUT"
+          - "IN"
+          description: "Adjustment type OUT: withdraw collateral IN add collateral"
+      example:
+        orderId: ""
+        amount: ""
+        pledgeCoin: ""
+        reviseType: ""
+    SetHoldingModeRequest:
+      type: object
+      required: ["holdMode"]
+      properties:
+        holdMode:
+          type: string
+          enum:
+          - "one_way_mode"
+          - "hedge_mode"
+          description: "Holding mode one_way_mode This mode allows holding positions in a single direction, either long or short, but not both at the same time hedge_mode This mode allows holding both long and short positions simultaneously"
+      example:
+        holdMode: ""
+    SetLeverageRequest:
+      type: object
+      required: ["category", "leverage"]
+      properties:
+        category:
+          type: string
+          enum:
+          - "MARGIN"
+          - "USDT-FUTURES"
+          - "COIN-FUTURES"
+          - "USDC-FUTURES"
+          description: "Product type MARGIN Margin trading USDT-FUTURES USDT futures COIN-FUTURESCoin-M futures USDC-FUTURES USDC futures"
+        symbol:
+          type: string
+          description: "Symbol name This field is required to set leverage for futures"
+        leverage:
+          type: string
+          description: "Leverage multiple"
+        coin:
+          type: string
+          description: "Coin name This field is required to set leverage for margin trading"
+        posSide:
+          type: string
+          enum:
+          - "long"
+          - "short"
+          description: "Position side long/short This field is required to set leverage for isolated margin"
+      example:
+        category: ""
+        symbol: ""
+        leverage: ""
+        coin: ""
+        posSide: ""
+    SetUpDepositAccountRequest:
+      type: object
+      required: ["coin", "accountType"]
+      properties:
+        coin:
+          type: string
+          description: "Recharge coin 如BTC"
+        accountType:
+          type: string
+          enum:
+          - "funding"
+          - "unified"
+          - "otc"
+          description: "Account type funding Funding account unified Unified account otc OTC account The current default is the funding account, and it can be modified to a unified account or an OTC account"
+      example:
+        coin: ""
+        accountType: ""
+    SubMainAccountTransferRequest:
+      type: object
+      required: ["fromType", "toType", "amount", "coin"]
+      properties:
+        fromType:
+          type: string
+          enum:
+          - "spot"
+          - "uta"
+          description: "Transferring Account Type spot Funding account uta Unified Account"
+        toType:
+          type: string
+          enum:
+          - "spot"
+          - "p2p"
+          - "uta"
+          description: "Receiving Account Type spot Funding account p2p OTC account uta Unified Account"
+        amount:
+          type: string
+          description: "Amount to Transfer In"
+        coin:
+          type: string
+          description: "Transfer Currency, e.g., BTC"
+        clientOid:
+          type: string
+          description: "clientOid,Cannot exceed 64 characters."
+      example:
+        fromType: ""
+        toType: ""
+        amount: ""
+        coin: ""
+        clientOid: ""
+    SwitchDeductRequest:
+      type: object
+      required: ["deduct"]
+      properties:
+        deduct:
+          type: string
+          enum:
+          - "on"
+          - "off"
+          description: "Is it enabled on enabled off disabled"
+      example:
+        deduct: ""
+    TransferRequest:
+      type: object
+      required: ["fromType", "toType", "amount", "coin"]
+      properties:
+        fromType:
+          type: string
+          enum:
+          - "spot"
+          - "p2p"
+          - "coin_futures"
+          - "usdt_futures"
+          - "usdc_futures"
+          - "crossed_margin"
+          - "isolated_margin"
+          - "uta"
+          description: "From (source) account type spot Spot account/Funding Account p2p P2P account/OTC account coin_futures Coin-M futures account usdt_futures USDT futures account usdc_futures USDC futures account crossed_margin Cross margin account isolated_margin Isolated margin account uta Unified trading account"
+        toType:
+          type: string
+          enum:
+          - "spot"
+          - "p2p"
+          - "coin_futures"
+          - "usdt_futures"
+          - "usdc_futures"
+          - "crossed_margin"
+          - "isolated_margin"
+          - "uta"
+          description: "To (target) account type spot Spot account/Funding Account p2p P2P account/OTC account coin_futures Coin-M futures account usdt_futures USDT futures account usdc_futures USDC futures account crossed_margin Cross margin account isolated_margin Isolated margin account uta Unified trading account"
+        amount:
+          type: string
+          description: "transfer amount"
+        coin:
+          type: string
+          description: "transfer coin e.g: BTC"
+        symbol:
+          type: string
+          description: "Isolated spot margin e.g: BTCUSDT"
+        allowBorrow:
+          type: string
+      example:
+        fromType: ""
+        toType: ""
+        amount: ""
+        coin: ""
+        symbol: ""
+        allowBorrow: ""
+    WithdrawalRequest:
+      type: object
+      required: ["coin", "transferType", "address", "size"]
+      properties:
+        coin:
+          type: string
+          description: "Coin name"
+        chain:
+          type: string
+          description: "Blockchain Network - For example, erc20, trc20, etc. - This parameter is required when transferType=on_chain - The chain name can be obtained using the Get Currency Information API."
+        transferType:
+          type: string
+          enum:
+          - "on_chain"
+          - "internal_transfer"
+          description: "Withdrawal Type on_chainOn-chain deposit internal_transferInternal transfer"
+        address:
+          type: string
+          description: "Withdrawal Address - When transferType is on_chain, fill in the chain address. - When transferType is internal_transfer, fill in the UID, email, or mobile number based on innerToType."
+        innerToType:
+          type: string
+          enum:
+          - "uid"
+          - "email"
+          - "mobile"
+          description: "Internal Withdrawal Address Type uidUser ID email Email mobile Mobile phone number - If not filled, the default value is uid"
+        areaCode:
+          type: string
+          description: "Area Code This parameter is required when innerToType = mobile"
+        tag:
+          type: string
+          description: "Address Tag This is required for withdrawals of certain cryptocurrencies, like EOS."
+        size:
+          type: string
+          description: "Withdrawal Quantity Special Notes for Bitcoin Lightning Network Withdrawals： This parameter must exactly match the amount on the Bitcoin Lightning Network deposit invoice; The withdrawal quantity for Bitcoin Lightning Network represents the amount received, excluding fees; The quantity precision can be obtained via the \"Get Currency Information\" API"
+        remark:
+          type: string
+          description: "Remark"
+        clientOid:
+          type: string
+          description: "Client Order ID"
+        memberCode:
+          type: string
+          description: "Member Code bithumb korbit coinone"
+        identityType:
+          type: string
+          enum:
+          - "company"
+          - "user"
+          description: "Identity Type companyInstitutional Company user Individual User"
+        companyName:
+          type: string
+          description: "Company Name Fill in this parameter when identity=company"
+        firstName:
+          type: string
+          description: "First Name Fill in this parameter when identity=user"
+        lastName:
+          type: string
+          description: "Last Name Fill in this parameter when identity=user"
+      example:
+        coin: ""
+        chain: ""
+        transferType: ""
+        address: ""
+        innerToType: ""
+        areaCode: ""
+        tag: ""
+        size: ""
+        remark: ""
+        clientOid: ""
+        memberCode: ""
+        identityType: ""
+        companyName: ""
+        firstName: ""
+        lastName: ""
