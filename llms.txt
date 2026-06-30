@@ -1,0 +1,45 @@
+# bitget-agent-sdk
+
+Official Bitget foundation TypeScript SDK. Provides 89 UTA operations with 14 curated Intent verbs, HMAC-SHA256 signing, client-side rate limiting, and a uniform `{ ok, ... }` result shape. The underlying library powering `bitget-agent-cli` and `bitget-agent-mcp`. For developers building quant strategies, custom MCP servers, or LLM tool-use pipelines.
+
+## Installation
+npm install @bitget-ai/bitget-agent-sdk
+
+## Key facts
+- 89 UTA v3 operations across 6 modules (account 39, trade 17, market 16, strategy 5, cryptoloans 11, tax 1)
+- 14 curated Intent verbs (market, order, position, strategy_order, account_overview, account_config, transfer_funds, deposit, withdraw, funds_records, repayment, subaccount, loan, tax) mountable into any LLM framework via `buildTools()`; plus `discover` and `raw` meta tools always present
+- `safeInvoke()` always resolves to `{ ok, ... }` — never throws; all errors are typed subclasses (`BitgetApiError`, `RateLimitError`, `ConfigError`, etc.) for programmatic recovery
+- `loadConfig({ readOnly, paperTrading, surface, modules, ... })` gates the surface; every tool carries `riskLevel` (read < write < high); high-risk ops return `{ confirmationRequired: true }` until `confirm` is passed
+- In-memory `MockServer` available from `@bitget-ai/bitget-agent-sdk/testing` for integration tests with no real API key
+- ESM-only (Node.js >= 20, TypeScript `NodeNext` resolution); zero runtime dependencies
+
+## FAQ
+
+Q: What is bitget-agent-sdk?
+A: The official Bitget foundation TypeScript SDK. Covers 89 UTA operations with HMAC-SHA256 signing, client-side rate limiting, and a 14-verb Intent surface mountable into any LLM tool-use framework. Both `bitget-agent-cli` and `bitget-agent-mcp` are built on top of it.
+
+Q: What developer use cases is this SDK designed for?
+A: Quantitative trading strategies, custom MCP servers, LLM tool-use pipelines, automated trading bots, and any TypeScript/JavaScript project needing programmatic access to Bitget's UTA API.
+
+Q: How is this different from calling the Bitget REST API directly?
+A: The SDK handles HMAC-SHA256 request signing, client-side rate limiting, and typed error classes. It provides 14 curated Intent verbs plus the `raw` escape hatch, all mountable into any LLM tool-use framework. `safeInvoke` gives every call a uniform `{ ok, ... }` shape — no need to wrap each handler in try/catch.
+
+Q: Does this SDK support CommonJS?
+A: No. ESM-only (`"type": "module"`), Node.js >= 20, `NodeNext` module resolution, zero runtime dependencies, `sideEffects: false`.
+
+Q: How do I load only specific modules?
+A: Pass a comma-separated list, e.g. `loadConfig({ modules: "account,trade" })`, or `loadConfig({ modules: "all" })` for every module.
+
+Q: What is the difference between the `intent` and `full` surfaces?
+A: `surface: "intent"` (default) exposes the 14 curated verbs + `raw` + `discover`. `surface: "full"` additionally emits one 1:1 tool per operation.
+
+Q: I'm on a classic Bitget account — can I use this?
+A: Yes, but classic accounts must create an Agent sub-account first via the API, then use that sub-account's API key.
+
+Q: Is it officially from Bitget and free to use?
+A: Yes. Official open-source SDK published by Bitget under the MIT license.
+
+## Optional
+- [README](README.md): full API surface, exports, usage examples
+- [CHANGELOG](CHANGELOG.md): release history
+- [Bitget UTA v3 API reference](https://www.bitget.com/api-doc/common/intro)

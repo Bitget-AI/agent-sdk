@@ -1,3 +1,9 @@
+import {
+  classify,
+  decodeError,
+  type ErrorCategory,
+} from "./error-catalog.js";
+
 export type ErrorType =
   | "ConfigError"
   | "AuthenticationError"
@@ -12,8 +18,12 @@ export interface ToolErrorPayload {
   error: {
     type: ErrorType;
     code?: string;
+    /** Coarse machine-readable bucket the LLM branches on (P1). */
+    category: ErrorCategory;
     message: string;
     suggestion?: string;
+    /** True when the same call may succeed after a short backoff. */
+    retryable: boolean;
     endpoint?: string;
   };
   timestamp: string;
@@ -98,13 +108,16 @@ export function toToolErrorPayload(
   fallbackEndpoint?: string,
 ): ToolErrorPayload {
   if (error instanceof BitgetMcpError) {
+    const { category, retryable } = classify(error.type, error.code);
     return {
       ok: false,
       error: {
         type: error.type,
         code: error.code,
+        category,
         message: error.message,
-        suggestion: error.suggestion,
+        suggestion: error.suggestion ?? decodeError(error.code)?.suggestion,
+        retryable,
         endpoint: error.endpoint ?? fallbackEndpoint,
       },
       timestamp: new Date().toISOString(),
@@ -116,9 +129,11 @@ export function toToolErrorPayload(
     ok: false,
     error: {
       type: "InternalError",
+      category: "unknown",
       message,
       suggestion:
         "Unexpected server error. Check tool arguments and retry. If it persists, inspect server logs.",
+      retryable: false,
       endpoint: fallbackEndpoint,
     },
     timestamp: new Date().toISOString(),

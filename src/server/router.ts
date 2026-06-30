@@ -1,91 +1,100 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
+import type { CatalogOperation } from "../generated/catalog.js";
 import type { MockState } from "./state.js";
 
-export type RouteHandler = (
-  req: IncomingMessage,
-  body: Record<string, unknown>,
-  query: URLSearchParams,
-  state: MockState,
-) => Promise<unknown> | unknown;
+export interface MockHandlerContext {
+  req: IncomingMessage;
+  body: Record<string, unknown>;
+  query: URLSearchParams;
+  state: MockState;
+  op: CatalogOperation;
+}
+
+export type MockHandler = (ctx: MockHandlerContext) => Promise<unknown> | unknown;
+
+interface Route {
+  op: CatalogOperation;
+  handler: MockHandler;
+}
+
+function send(res: ServerResponse, status: number, payload: unknown): void {
+  res.writeHead(status, { "Content-Type": "application/json" });
+  res.end(JSON.stringify(payload));
+}
 
 export class Router {
-  private routes = new Map<string, RouteHandler>();
+  private readonly routes = new Map<string, Route>();
 
-  register(method: string, path: string, handler: RouteHandler): void {
-    this.routes.set(`${method.toUpperCase()} ${path}`, handler);
+  public register(op: CatalogOperation, handler: MockHandler): void {
+    this.routes.set(`${op.method} ${op.path}`, { op, handler });
   }
 
-  async handle(
+  public hasRoute(method: string, path: string): boolean {
+    return this.routes.has(`${method.toUpperCase()} ${path}`);
+  }
+
+  public async handle(
     req: IncomingMessage,
     res: ServerResponse,
     state: MockState,
   ): Promise<void> {
-    const rawUrl = req.url ?? "/";
-    const urlObj = new URL(rawUrl, "http://localhost");
+    const urlObj = new URL(req.url ?? "/", "http://localhost");
     const path = urlObj.pathname;
-    const query = urlObj.searchParams;
     const method = (req.method ?? "GET").toUpperCase();
     const key = `${method} ${path}`;
 
-    // Check error overrides first
-    const override = state.errorOverrides.get(key);
-    if (override) {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ code: override.code, msg: override.msg, data: null }));
+    const route = this.routes.get(key);
+    if (!route) {
+      send(res, 404, { code: "40404", msg: `Unknown endpoint: ${key}`, data: null });
       return;
     }
 
-    // Auth check for private endpoints
-    const isPrivate =
-      method === "POST" ||
-      path.includes("/account/") ||
-      path.includes("/wallet/") ||
-      path.includes("/trade/place") ||
-      path.includes("/trade/cancel") ||
-      path.includes("/mix/order/") ||
-      path.includes("/mix/account/") ||
-      path.includes("/mix/position/") ||
-      path.includes("/earn/") ||
-      path.includes("/user/") ||
-      path.includes("/broker/") ||
-      path.includes("/copy/") ||
-      path.includes("/convert/trade") ||
-      path.includes("/p2p/orderList") ||
-      path.includes("/p2p/merchantInfo");
+    const override = state.errorOverrides.get(key);
+    if (override) {
+      send(res, 200, { code: override.code, msg: override.msg, data: null });
+      return;
+    }
 
-    if (isPrivate) {
-      const hasKey = req.headers["access-key"];
-      const hasSign = req.headers["access-sign"];
-      const hasPassphrase = req.headers["access-passphrase"];
-      const hasTimestamp = req.headers["access-timestamp"];
-      if (!hasKey || !hasSign || !hasPassphrase || !hasTimestamp) {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ code: "40017", msg: "Invalid API key", data: null }));
+    // Auth enforcement is driven entirely by the catalog's `auth` field.
+    if (route.op.auth === "private") {
+      const h = req.headers;
+      if (
+        !h["access-key"] ||
+        !h["access-sign"] ||
+        !h["access-passphrase"] ||
+        !h["access-timestamp"]
+      ) {
+        send(res, 200, { code: "40017", msg: "Invalid API key", data: null });
         return;
       }
     }
 
-    // Read body for POST requests
     let body: Record<string, unknown> = {};
     if (method === "POST") {
-      body = await readBody(req);
+      try {
+        body = await readBody(req);
+      } catch {
+        send(res, 200, { code: "40808", msg: "Invalid JSON body", data: null });
+        return;
+      }
     }
 
-    const handler = this.routes.get(key);
-    if (!handler) {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ code: "40001", msg: `Unknown endpoint: ${key}`, data: null }));
-      return;
-    }
-
+    const opId = route.op.operationId;
     try {
-      const data = await Promise.resolve(handler(req, body, query, state));
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ code: "00000", msg: "success", data }));
+      const data = state.responseOverrides.has(opId)
+        ? state.responseOverrides.get(opId)
+        : await Promise.resolve(
+            route.handler({ req, body, query: urlObj.searchParams, state, op: route.op }),
+          );
+      send(res, 200, {
+        code: "00000",
+        msg: "success",
+        requestTime: Date.now(),
+        data: data ?? null,
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ code: "50000", msg, data: null }));
+      send(res, 200, { code: "50000", msg, data: null });
     }
   }
 }
@@ -102,5 +111,6 @@ async function readBody(req: IncomingMessage): Promise<Record<string, unknown>> 
         reject(new Error("Invalid JSON body"));
       }
     });
+    req.on("error", reject);
   });
 }

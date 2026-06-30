@@ -1,29 +1,64 @@
 import type { MockState } from "./state.js";
 
-export const SPOT_TICKERS: Record<string, { lastPr: string; bidPr: string; askPr: string; change24h: string }> = {
-  BTCUSDT: { lastPr: "50000", bidPr: "49999", askPr: "50001", change24h: "0.02" },
-  ETHUSDT: { lastPr: "3000",  bidPr: "2999",  askPr: "3001",  change24h: "0.01" },
-  SOLUSDT: { lastPr: "150",   bidPr: "149.9", askPr: "150.1", change24h: "-0.005" },
-};
+export const TICKERS: Record<string, unknown>[] = [
+  {
+    symbol: "BTCUSDT",
+    category: "SPOT",
+    lastPr: "50000.5",
+    open24h: "49000",
+    high24h: "51000",
+    low24h: "48500",
+    bidPr: "50000.4",
+    askPr: "50000.6",
+    baseVolume: "1234.5",
+    quoteVolume: "61725000",
+    ts: "1690000000000",
+  },
+  {
+    symbol: "ETHUSDT",
+    category: "SPOT",
+    lastPr: "3000.25",
+    open24h: "2950",
+    high24h: "3050",
+    low24h: "2900",
+    bidPr: "3000.2",
+    askPr: "3000.3",
+    baseVolume: "9876.5",
+    quoteVolume: "29629500",
+    ts: "1690000000000",
+  },
+];
 
-export const FUTURES_TICKERS: Record<string, { lastPr: string; bidPr: string; askPr: string; fundingRate: string; productType: string }> = {
-  BTCUSDT: { lastPr: "50100", bidPr: "50099", askPr: "50101", fundingRate: "0.0001", productType: "usdt-futures" },
-  ETHUSDT: { lastPr: "3010",  bidPr: "3009",  askPr: "3011",  fundingRate: "0.00008", productType: "usdt-futures" },
-};
+export const INSTRUMENTS: Record<string, unknown>[] = [
+  {
+    symbol: "BTCUSDT",
+    category: "SPOT",
+    baseCoin: "BTC",
+    quoteCoin: "USDT",
+    minOrderAmount: "0.0001",
+    pricePrecision: "1",
+    sizePrecision: "4",
+    status: "online",
+  },
+];
 
-/** Mutates `state` in place with default fixture balances and earn products. */
+export const BALANCES: Record<string, unknown>[] = [
+  {
+    coin: "USDT",
+    available: "10000.00",
+    frozen: "0",
+    locked: "0",
+    equity: "10000.00",
+  },
+  {
+    coin: "BTC",
+    available: "0.5",
+    frozen: "0",
+    locked: "0",
+    equity: "0.5",
+  },
+];
+
 export function seedState(state: MockState): void {
-  // Default balances
-  state.balances.set("USDT", { coin: "USDT", available: "10000", frozen: "0" });
-  state.balances.set("BTC",  { coin: "BTC",  available: "1",     frozen: "0" });
-  state.balances.set("ETH",  { coin: "ETH",  available: "10",    frozen: "0" });
-
-  // Default earn products
-  state.earnProducts = [
-    { productId: "earn001", coin: "USDT", productType: "flexible", apy: "0.05",  minAmount: "10" },
-    { productId: "earn002", coin: "BTC",  productType: "flexible", apy: "0.02",  minAmount: "0.001" },
-    { productId: "earn003", coin: "USDT", productType: "fixed",    apy: "0.08",  minAmount: "100", term: 30 },
-    { productId: "earn004", coin: "ETH",  productType: "fixed",    apy: "0.04",  minAmount: "0.1", term: 14 },
-    { productId: "earn005", coin: "USDT", productType: "fixed",    apy: "0.12",  minAmount: "1000", term: 90 },
-  ];
+  state.balances = BALANCES.map((row) => ({ ...row }));
 }

@@ -1,0 +1,7 @@
+lib
+node_modules
+coverage
+src/generated
+pnpm-lock.yaml
+openapi.yaml
+CHANGELOG.md

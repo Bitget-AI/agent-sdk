@@ -1,49 +1,65 @@
-import { test, expect } from "vitest";
-import { toToolErrorPayload, BitgetApiError, ConfigError, ValidationError } from "bitget-agent-sdk";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { MockServer } from "@bitget-ai/bitget-agent-sdk/testing";
+import {
+  BitgetRestClient,
+  loadConfig,
+  AuthenticationError,
+  BitgetApiError,
+} from "@bitget-ai/bitget-agent-sdk";
 
-test("toToolErrorPayload wraps BitgetApiError to nested shape", () => {
-  const err = new BitgetApiError("Insufficient balance", { code: "40786" });
-  const payload = toToolErrorPayload(err);
-  expect(payload.ok).toBe(false);
-  expect(payload.error.type).toBe("BitgetApiError");
-  expect(payload.error.code).toBe("40786");
-  expect(payload.error.message).toBe("Insufficient balance");
-  expect(typeof payload.timestamp).toBe("string");
-  // timestamp should be a valid ISO date string
-  expect(() => new Date(payload.timestamp)).not.toThrow();
+let server: MockServer;
+
+beforeAll(async () => {
+  server = new MockServer();
+  await server.start();
+  process.env.BITGET_API_BASE_URL = server.baseUrl;
 });
 
-test("toToolErrorPayload wraps generic Error as InternalError", () => {
-  const err = new Error("Something broke");
-  const payload = toToolErrorPayload(err);
-  expect(payload.ok).toBe(false);
-  expect(payload.error.type).toBe("InternalError");
-  expect(payload.error.message).toBe("Something broke");
+afterAll(async () => {
+  delete process.env.BITGET_API_BASE_URL;
+  await server.stop();
 });
 
-test("toToolErrorPayload wraps ConfigError", () => {
-  const err = new ConfigError("Missing credentials", "Set env vars");
-  const payload = toToolErrorPayload(err);
-  expect(payload.error.type).toBe("ConfigError");
-  expect(payload.error.suggestion).toBe("Set env vars");
-  expect(payload.error.message).toBe("Missing credentials");
+beforeEach(() => {
+  server.reset();
 });
 
-test("toToolErrorPayload wraps ValidationError", () => {
-  const err = new ValidationError("orders must be an array");
-  const payload = toToolErrorPayload(err);
-  expect(payload.error.type).toBe("ValidationError");
-  expect(payload.error.message).toBe("orders must be an array");
-});
+function authedClient(): BitgetRestClient {
+  process.env.BITGET_API_KEY = "key";
+  process.env.BITGET_SECRET_KEY = "secret";
+  process.env.BITGET_PASSPHRASE = "pass";
+  return new BitgetRestClient(loadConfig({ modules: "all" }));
+}
 
-test("toToolErrorPayload sets ok=false on all error types", () => {
-  const errors = [
-    new BitgetApiError("api error"),
-    new ConfigError("config error"),
-    new ValidationError("validation error"),
-    new Error("generic error"),
-  ];
-  for (const err of errors) {
-    expect(toToolErrorPayload(err).ok).toBe(false);
-  }
+describe("rest client error handling", () => {
+  it("maps a Bitget error code to BitgetApiError", async () => {
+    server.setErrorOverride("POST", "/api/v3/trade/place-order", "40034", "param error");
+    const client = authedClient();
+    await expect(
+      client.callOperation("placeOrder", { symbol: "BTCUSDT", side: "buy" }),
+    ).rejects.toBeInstanceOf(BitgetApiError);
+  });
+
+  it("maps auth code 40017 to AuthenticationError", async () => {
+    server.setErrorOverride("GET", "/api/v3/account/assets", "40017", "Invalid API key");
+    const client = authedClient();
+    await expect(client.callOperation("getAccountAssets")).rejects.toBeInstanceOf(
+      AuthenticationError,
+    );
+  });
+
+  it("rejects private calls without credentials", async () => {
+    delete process.env.BITGET_API_KEY;
+    delete process.env.BITGET_SECRET_KEY;
+    delete process.env.BITGET_PASSPHRASE;
+    const client = new BitgetRestClient(loadConfig({ modules: "all" }));
+    await expect(client.callOperation("getAccountAssets")).rejects.toThrow(
+      /requires API credentials/,
+    );
+  });
+
+  it("rejects an unknown operationId", async () => {
+    const client = authedClient();
+    await expect(client.callOperation("nopeNotReal")).rejects.toThrow(/Unknown operationId/);
+  });
 });
