@@ -9,6 +9,8 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Bitget-AI/agent-sdk/actions/workflows/ci.yml"><img src="https://github.com/Bitget-AI/agent-sdk/actions/workflows/ci.yml/badge.svg" alt="Bitget Agent SDK continuous integration build status" /></a>
+  <a href="https://codecov.io/gh/Bitget-AI/agent-sdk"><img src="https://codecov.io/gh/Bitget-AI/agent-sdk/branch/main/graph/badge.svg" alt="Bitget Agent SDK test coverage" /></a>
   <a href="https://www.npmjs.com/package/@bitget-ai/bitget-agent-sdk"><img src="https://img.shields.io/npm/v/%40bitget-ai%2Fbitget-agent-sdk.svg?style=flat-square&color=6f42c1&label=npm" alt="Bitget Agent SDK npm package version" /></a>
   <a href="https://www.npmjs.com/package/@bitget-ai/bitget-agent-sdk"><img src="https://img.shields.io/npm/dm/%40bitget-ai%2Fbitget-agent-sdk.svg?style=flat-square&color=026e00&label=downloads" alt="Bitget Agent SDK monthly downloads" /></a>
   <img src="https://img.shields.io/npm/types/%40bitget-ai%2Fbitget-agent-sdk.svg?style=flat-square" alt="TypeScript type definitions included" />
