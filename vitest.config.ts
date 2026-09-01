@@ -20,13 +20,13 @@ export default defineConfig({
         "src/**/*.d.ts",
         "src/bin/**", // thin CLI entrypoints
       ],
-      // Thresholds disabled until calibrated against a real CI coverage run.
-      // thresholds: {
-      //   lines: 80,
-      //   functions: 80,
-      //   statements: 80,
-      //   branches: 75,
-      // },
+      // Calibrated against the CI run in PR #3 (93.02% stmts / 90.65% branch / 96.62% funcs / 93.02% lines).
+      thresholds: {
+        lines: 85,
+        functions: 90,
+        statements: 85,
+        branches: 85,
+      },
     },
   },
 });
