@@ -20,14 +20,12 @@ export default defineConfig({
         "src/**/*.d.ts",
         "src/bin/**", // thin CLI entrypoints
       ],
-      // Provisional floor. These thresholds have NOT been run yet (the offline
-      // registry blocks installing @vitest/coverage-v8); calibrate them against
-      // the first real `pnpm run coverage` report and adjust as needed.
+      // Calibrated against the CI run in PR #3 (93.02% stmts / 90.65% branch / 96.62% funcs / 93.02% lines).
       thresholds: {
-        lines: 80,
-        functions: 80,
-        statements: 80,
-        branches: 75,
+        lines: 85,
+        functions: 90,
+        statements: 85,
+        branches: 85,
       },
     },
   },
